@@ -11,10 +11,10 @@ body:
     validations:
       required: true
   - type: textarea
-    id: problem
+    id: fix
     attributes:
-        label: 🔧 수정된 내용
-        description: 수정된 내용을 설명해 주세요.
-        placeholder: 간결하게 적을수록 좋습니다!
+      label: 🔧 수정된 내용
+      description: 수정된 내용을 설명해 주세요.
+      placeholder: 간결하게 적을수록 좋습니다!
     validations:
-        required: true
+      required: true
