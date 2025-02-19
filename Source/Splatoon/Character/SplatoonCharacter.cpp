@@ -45,17 +45,6 @@ void ASplatoonCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsTransformed)
-	{
-		if (bIsPaint)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = Speed * SpeedUp;
-		}
-		else
-		{
-			GetCharacterMovement()->MaxWalkSpeed = Speed * SpeedDown;
-		}
-	}
 }
 
 void ASplatoonCharacter::CheckPaint()
@@ -184,13 +173,33 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 		if (!bIsTransformed)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Transform")));
+			GetWorldTimerManager().SetTimer(
+				PaintCheckHandle,
+				this,
+				&ASplatoonCharacter::UpdatePaintCheck,
+				0.01f,
+				true
+			);
 			bIsTransformed = true;
 		}
 		else
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Off")));
-			bIsTransformed = false;
 			GetCharacterMovement()->MaxWalkSpeed = Speed;
+			GetWorldTimerManager().ClearTimer(PaintCheckHandle);
+			bIsTransformed = false;
 		}
+	}
+}
+
+void ASplatoonCharacter::UpdatePaintCheck()
+{
+	if (bIsPaint)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = Speed * SpeedUp;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = Speed * SpeedDown;
 	}
 }

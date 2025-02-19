@@ -34,6 +34,11 @@ protected:
 
 	// RayCast
 	void CheckPaint();
+
+	//TimerHandle
+	FTimerHandle PaintCheckHandle;
+	void UpdatePaintCheck();
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 
