@@ -47,7 +47,7 @@ void ASplatoonCharacter::Tick(float DeltaTime)
 
 }
 
-void ASplatoonCharacter::PaintCheck()
+void ASplatoonCharacter::CheckPaint()
 {
 	FVector Start = GetActorLocation();
 	FVector End = Start - FVector(0, 0, 200.0f);

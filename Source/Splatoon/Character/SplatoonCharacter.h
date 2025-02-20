@@ -35,7 +35,7 @@ protected:
 	bool bIsPaint;
 
 	// RayCast
-	void PaintCheck();
+	void CheckPaint();
 
 	//TimerHandle
 	FTimerHandle PaintCheckHandle;
