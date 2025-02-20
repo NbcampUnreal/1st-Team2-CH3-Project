@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GunInterface.h"
 #include "GameFramework/Actor.h"
 #include "BaseGun.generated.h"
 
@@ -13,7 +12,7 @@ enum class EFireMode : uint8
 };
 
 UCLASS()
-class SPLATOON_API ABaseGun : public AActor, public IGunInterface
+class SPLATOON_API ABaseGun : public AActor
 {
 	GENERATED_BODY()
 
@@ -32,22 +31,18 @@ protected:
 	
 	virtual void BeginPlay() override;
 	
-/* IGunInterface */
-public:
-	UFUNCTION(BlueprintCallable)
-	virtual void FirePressed() override;
-	UFUNCTION(BlueprintCallable)
-	virtual void FireReleased() override;
-
-	UFUNCTION(BlueprintCallable)
-	virtual void ReloadStart() override;
-	UFUNCTION(BlueprintCallable)
-	virtual void ReloadEnd() override;
-
 /* Fire */
+public:
+	// 플레이어 격발시 호출
+	UFUNCTION(BlueprintCallable)
+	void FirePressed();
+	// 플레이어 격발 중지시 호출
+	UFUNCTION(BlueprintCallable)
+	void FireReleased();
+	
 protected:
 	// 탄환이 격발되는 시간 간격
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Interval")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Fire")
 	float FireBulletInterval;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Fire")
@@ -58,9 +53,17 @@ protected:
 	void Fire();
 	
 /* Reload */
+public:
+	// 재장전 시작시 호출
+	UFUNCTION(BlueprintCallable)
+	void ReloadStart();
+	// 재장전 종료
+	UFUNCTION(BlueprintCallable)
+	void ReloadStop();
+	
 protected:
 	// 탄환이 장전되는 시간 간격
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Interval")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Reload")
 	float ReloadBulletInterval;
 	
 	FTimerHandle ReloadTimerHandle;

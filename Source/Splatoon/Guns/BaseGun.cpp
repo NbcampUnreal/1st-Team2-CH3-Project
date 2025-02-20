@@ -33,13 +33,11 @@ void ABaseGun::BeginPlay()
 	Super::BeginPlay();
 }
 
-// 플레이어가 격발한 경우
 void ABaseGun::FirePressed()
 {
 	Fire();
 }
 
-// 플레이어가 격발을 중지한 경우
 void ABaseGun::FireReleased()
 {
 	if (UWorld* World = GetWorld())
@@ -48,7 +46,6 @@ void ABaseGun::FireReleased()
 	}
 }
 
-// 재장전 시작
 void ABaseGun::ReloadStart()
 {
 	if (UWorld* World = GetWorld())
@@ -63,8 +60,7 @@ void ABaseGun::ReloadStart()
 	}
 }
 
-// 재장전 종료
-void ABaseGun::ReloadEnd()
+void ABaseGun::ReloadStop()
 {
 	if (UWorld* World = GetWorld())
 	{
