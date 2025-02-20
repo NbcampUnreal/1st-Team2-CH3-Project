@@ -6,24 +6,64 @@
 #include "GameFramework/Character.h"
 #include "SplatoonCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+struct  FInputActionValue;
+
 UCLASS()
 class SPLATOON_API ASplatoonCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ASplatoonCharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Speed
+	float Speed;
+	float SpeedUp;
+	float SpeedDown;
+
+	// Character form
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Transform")
+	bool bIsTransformed;
+
+	//Paint
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Paint")
+	bool bIsPaint;
+
+	// RayCast
+	void CheckPaint();
+
+	//TimerHandle
+	FTimerHandle PaintCheckHandle;
+	void UpdatePaintCheck();
+
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// Camera
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	USpringArmComponent* SpringArmComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	UCameraComponent* CameraComp;
+
+	// Input Function
+	UFUNCTION()
+	void Move(const FInputActionValue& value);
+	UFUNCTION()
+	void StartJump(const FInputActionValue& value);
+	UFUNCTION()
+	void StopJump(const FInputActionValue& value);
+	UFUNCTION()
+	void Look(const FInputActionValue& value);
+	UFUNCTION()
+	void Fire(const FInputActionValue& value);
+	UFUNCTION()
+	void Transfor(const FInputActionValue& value);
 
 };
