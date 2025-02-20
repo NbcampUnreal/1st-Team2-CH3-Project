@@ -47,7 +47,7 @@ void ASplatoonCharacter::Tick(float DeltaTime)
 
 }
 
-void ASplatoonCharacter::CheckPaint()
+void ASplatoonCharacter::PaintCheck()
 {
 	FVector Start = GetActorLocation();
 	FVector End = Start - FVector(0, 0, 200.0f);
@@ -161,34 +161,31 @@ void ASplatoonCharacter::Look(const FInputActionValue& value)
 }
 void ASplatoonCharacter::Fire(const FInputActionValue& value)
 {
-	if (value.Get<bool>())
+	if (!bIsTransformed)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire")));
 	}
 }
 void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 {
-	if (value.Get<bool>())
+	if (!bIsTransformed)
 	{
-		if (!bIsTransformed)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Transform")));
-			GetWorldTimerManager().SetTimer(
-				PaintCheckHandle,
-				this,
-				&ASplatoonCharacter::UpdatePaintCheck,
-				0.01f,
-				true
-			);
-			bIsTransformed = true;
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Off")));
-			GetCharacterMovement()->MaxWalkSpeed = Speed;
-			GetWorldTimerManager().ClearTimer(PaintCheckHandle);
-			bIsTransformed = false;
-		}
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Transform")));
+		GetWorldTimerManager().SetTimer(
+			PaintCheckHandle,
+			this,
+			&ASplatoonCharacter::UpdatePaintCheck,
+			0.01f,
+			true
+		);
+		bIsTransformed = true;
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Off")));
+		GetCharacterMovement()->MaxWalkSpeed = Speed;
+		GetWorldTimerManager().ClearTimer(PaintCheckHandle);
+		bIsTransformed = false;
 	}
 }
 

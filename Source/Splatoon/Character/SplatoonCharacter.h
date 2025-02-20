@@ -27,13 +27,15 @@ protected:
 	float SpeedDown;
 
 	// Character form
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Transform")
 	bool bIsTransformed;
 
 	//Paint
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Paint")
 	bool bIsPaint;
 
 	// RayCast
-	void CheckPaint();
+	void PaintCheck();
 
 	//TimerHandle
 	FTimerHandle PaintCheckHandle;
