@@ -6,6 +6,7 @@
 
 class UDecalComponent;
 class UMaterialInterface;
+class UPaintDecalManager;
 
 UCLASS()
 class SPLATOON_API APaintDecal : public AActor
@@ -13,9 +14,9 @@ class SPLATOON_API APaintDecal : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	APaintDecal();
 
+public:
 	static void SpawnPaintDecal(UWorld* World, const FVector& Location, const FRotator& Rotator);
 
 protected:
@@ -25,13 +26,6 @@ protected:
 	UMaterialInterface* DecalMaterial;
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet|Paint")
 	FVector DecalSize;
-	UPROPERTY(EditDefaultsOnly, Category = "Bullet|Paint")
-	int32 MaxDecal;
 
 	virtual void BeginPlay() override;
-
-private:
-	static TArray<APaintDecal*> DecalList;
-
-	void ManageDecal(APaintDecal* NewDecal);
 };
