@@ -1,27 +1,62 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "PaintDecal.h"
+#include "Components/DecalComponent.h"
+#include "Materials/MaterialInterface.h"
 
-// Sets default values
+TArray<APaintDecal*> APaintDecal::DecalList;
+
 APaintDecal::APaintDecal()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	DecalComp = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComponent"));
+	SetRootComponent(DecalComp);
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> PaintDecalMaterial(TEXT("/Game/Resources/Materials/M_PaintDecal.M_PaintDecal"));
+	if (PaintDecalMaterial.Succeeded())
+	{
+		DecalMaterial = PaintDecalMaterial.Object;
+	}
+
+	DecalSize = FVector(1.f);
+	MaxDecal = 50;
 }
 
-// Called when the game starts or when spawned
 void APaintDecal::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (DecalComp && DecalMaterial)
+	{
+		DecalComp->SetDecalMaterial(DecalMaterial);
+		DecalComp->SetWorldScale3D(DecalSize);
+	}
+
+	ManageDecal(this);
 }
 
-// Called every frame
-void APaintDecal::Tick(float DeltaTime)
+void APaintDecal::SpawnPaintDecal(UWorld* World, const FVector& Location, const FRotator& Rotator)
 {
-	Super::Tick(DeltaTime);
+	if (!World) return;
 
+	FActorSpawnParameters SpawnParms;
+	World->SpawnActor<APaintDecal>(APaintDecal::StaticClass(), Location, Rotator, SpawnParms);
 }
+
+void APaintDecal::ManageDecal(APaintDecal* NewDecal)
+{
+	if (!NewDecal) return;
+
+	DecalList.Add(NewDecal);
+
+	// 레벨에 스폰된 데칼 개수가 최대치를 넘어가면 가장 오래된 데칼 삭제
+	if (DecalList.Num() > MaxDecal)
+	{
+		if (DecalList[0])
+		{
+			DecalList[0]->Destroy();
+		}
+		DecalList.RemoveAt(0);
+	}
+}
+
 

@@ -1,10 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "PaintDecal.generated.h"
+
+class UDecalComponent;
+class UMaterialInterface;
 
 UCLASS()
 class SPLATOON_API APaintDecal : public AActor
@@ -15,12 +16,22 @@ public:
 	// Sets default values for this actor's properties
 	APaintDecal();
 
+	static void SpawnPaintDecal(UWorld* World, const FVector& Location, const FRotator& Rotator);
+
 protected:
-	// Called when the game starts or when spawned
+	UPROPERTY(VisibleAnywhere, Category = "Bullet|Paint")
+	UDecalComponent* DecalComp;
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet|Paint")
+	UMaterialInterface* DecalMaterial;
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet|Paint")
+	FVector DecalSize;
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet|Paint")
+	int32 MaxDecal;
+
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+private:
+	static TArray<APaintDecal*> DecalList;
 
+	void ManageDecal(APaintDecal* NewDecal);
 };
