@@ -1,8 +1,7 @@
 #include "PaintDecal.h"
+#include "PaintDecalManager.h"
 #include "Components/DecalComponent.h"
 #include "Materials/MaterialInterface.h"
-
-TArray<APaintDecal*> APaintDecal::DecalList;
 
 APaintDecal::APaintDecal()
 {
@@ -16,9 +15,7 @@ APaintDecal::APaintDecal()
 	{
 		DecalMaterial = PaintDecalMaterial.Object;
 	}
-
 	DecalSize = FVector(1.f);
-	MaxDecal = 50;
 }
 
 void APaintDecal::BeginPlay()
@@ -31,7 +28,11 @@ void APaintDecal::BeginPlay()
 		DecalComp->SetWorldScale3D(DecalSize);
 	}
 
-	ManageDecal(this);
+	UPaintDecalManager* Manager = UPaintDecalManager::GetInstance(GetWorld());
+	if (Manager)
+	{
+		Manager->AddDecalList(this);
+	}
 }
 
 void APaintDecal::SpawnPaintDecal(UWorld* World, const FVector& Location, const FRotator& Rotator)
@@ -39,24 +40,7 @@ void APaintDecal::SpawnPaintDecal(UWorld* World, const FVector& Location, const 
 	if (!World) return;
 
 	FActorSpawnParameters SpawnParms;
-	World->SpawnActor<APaintDecal>(APaintDecal::StaticClass(), Location, Rotator, SpawnParms);
-}
-
-void APaintDecal::ManageDecal(APaintDecal* NewDecal)
-{
-	if (!NewDecal) return;
-
-	DecalList.Add(NewDecal);
-
-	// 레벨에 스폰된 데칼 개수가 최대치를 넘어가면 가장 오래된 데칼 삭제
-	if (DecalList.Num() > MaxDecal)
-	{
-		if (DecalList[0])
-		{
-			DecalList[0]->Destroy();
-		}
-		DecalList.RemoveAt(0);
-	}
+	APaintDecal* NewDecal = World->SpawnActor<APaintDecal>(APaintDecal::StaticClass(), Location, Rotator, SpawnParms);
 }
 
 

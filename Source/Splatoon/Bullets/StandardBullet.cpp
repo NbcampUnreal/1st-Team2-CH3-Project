@@ -33,8 +33,6 @@ void AStandardBullet::BeginPlay()
 void AStandardBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	Super::OnHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
-
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("OnHit")));
 }
 
 void AStandardBullet::OnBulletDestroyed()
