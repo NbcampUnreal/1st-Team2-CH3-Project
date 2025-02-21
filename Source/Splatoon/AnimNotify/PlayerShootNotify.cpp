@@ -7,8 +7,16 @@
 void UPlayerShootNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	AActor* ActorCheck = MeshComp->GetOwner();
+
 	if (ActorCheck) {
 		ASplatoonCharacter* PlayerCharacter = Cast<ASplatoonCharacter>(ActorCheck);
-		//PlayerCharacter->
+
+		if (PlayerCharacter) {
+			GunActor = Cast<ABaseGun>(PlayerCharacter->GunClass);
+
+			if (GunActor) {
+				GunActor->Fire();
+			}
+		}
 	}
 }
