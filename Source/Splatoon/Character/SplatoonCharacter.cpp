@@ -191,6 +191,8 @@ void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 
 	if (!bIsTransformed && !bIsFire)
 	{
+		if (Gun->GetRemainingBullets() <= 0) return;
+
 		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 		GetWorldTimerManager().SetTimer(
 			FireTimerHandle,

@@ -36,8 +36,8 @@ public:
 	// 플레이어 격발시 호출
 	UFUNCTION(BlueprintCallable)
 	void FirePressed();
-
 	bool Fire();
+	int32 GetRemainingBullets();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Fire")
 	float FireBulletInterval;
