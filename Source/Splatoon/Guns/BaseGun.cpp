@@ -1,6 +1,7 @@
 #include "BaseGun.h"
-
-#include "Kismet/GameplayStatics.h"
+#include "Magazine/LiquidTank.h"
+#include "Components/StaticMeshComponent.h"
+#include "Splatoon/Bullets/BaseBullet.h"
 
 ABaseGun::ABaseGun()
 {
@@ -87,4 +88,19 @@ void ABaseGun::Reload()
 	RemainingBullets += 1;
 	
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Reload / RemainingBullets = %d"), RemainingBullets));
+}
+
+void ABaseGun::AddRemainingBullets(const int Amount)
+{
+	RemainingBullets = FMath::Clamp(RemainingBullets + Amount, 0, MaxRemainingBullets);
+
+	if (LiquidTank)
+	{
+		LiquidTank->SetPercent(static_cast<float>(RemainingBullets) / MaxRemainingBullets);
+	}
+}
+
+void ABaseGun::SetLiquidTank(ULiquidTank* InLiquidTank)
+{
+	LiquidTank = InLiquidTank;
 }

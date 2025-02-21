@@ -79,4 +79,13 @@ protected:
 	// 최대 탄환 수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Bullets")
 	int32 MaxRemainingBullets;
+	
+	void AddRemainingBullets(const int Amount);
+	
+/* LiquidTank */
+public:
+	void SetLiquidTank(ULiquidTank* InLiquidTank);
+	
+protected:
+	class ULiquidTank* LiquidTank;
 };
