@@ -38,14 +38,6 @@ void ABaseGun::FirePressed()
 	Fire();
 }
 
-void ABaseGun::FireReleased()
-{
-	if (UWorld* World = GetWorld())
-	{
-		World->GetTimerManager().ClearTimer(FireTimerHandle);
-	}
-}
-
 void ABaseGun::ReloadStart()
 {
 	if (UWorld* World = GetWorld())
@@ -68,40 +60,24 @@ void ABaseGun::ReloadStop()
 	}
 }
 
-void ABaseGun::Fire()
+bool ABaseGun::Fire()
 {
 	// 1. 남은 탄환 확인
-	if (RemainingBullets <= 0) return;
+	if (RemainingBullets <= 0) return false;
+	if (GetWorld() == nullptr) return false;
 
 	// 2. 탄환 감소
 	RemainingBullets -= 1;
 
 	// 3. 탄환 생성
-	if (UWorld* World = GetWorld())
-	{
-		World->SpawnActor<AActor>(
-			BulletClass,
-			FrontOfGun->GetComponentLocation(),
-			FrontOfGun->GetComponentRotation()
-		);
-	}
+	GetWorld()->SpawnActor<AActor>(
+		BulletClass,
+		FrontOfGun->GetComponentLocation(),
+		FrontOfGun->GetComponentRotation()
+	);
 
-	// 4. 연사 모드일 경우 타이머 설정
-	if (FireMode == EFireMode::FullAuto)
-	{
-		if (UWorld* World = GetWorld())
-		{
-			World->GetTimerManager().SetTimer
-			(
-				FireTimerHandle,
-				this,
-				&ABaseGun::Fire,
-				FireBulletInterval
-			);
-		}
-	}
-	
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Fire / RemainingBullets = %d"), RemainingBullets));
+	return true;
 }
 
 void ABaseGun::Reload()

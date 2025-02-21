@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Splatoon/Guns/BaseGun.h"
+#include "Animation/AnimMontage.h"
 #include "SplatoonCharacter.generated.h"
 
 class USpringArmComponent;
@@ -41,6 +43,12 @@ protected:
 	FTimerHandle PaintCheckHandle;
 	void UpdatePaintCheck();
 
+	// Gun
+	FTimerHandle FireTimerHandle;
+	ABaseGun* Gun;
+	bool bIsFire;
+	void Attack();
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 
@@ -52,6 +60,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraComp;
 
+	//Charater
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charater")
+	UStaticMeshComponent* TransformMeshComp;
+
+	// Animation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* AttackMontage;
+
+	// Gun
+	UPROPERTY(EditDefaultsOnly, Category = "Gun")
+	TSubclassOf<ABaseGun> GunClass;
+
 	// Input Function
 	UFUNCTION()
 	void Move(const FInputActionValue& value);
@@ -62,7 +82,9 @@ public:
 	UFUNCTION()
 	void Look(const FInputActionValue& value);
 	UFUNCTION()
-	void Fire(const FInputActionValue& value);
+	void StartFire(const FInputActionValue& value);
+	UFUNCTION()
+	void StopFire(const FInputActionValue& value);
 	UFUNCTION()
 	void Transfor(const FInputActionValue& value);
 

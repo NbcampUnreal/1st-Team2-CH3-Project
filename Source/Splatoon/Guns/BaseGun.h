@@ -36,21 +36,17 @@ public:
 	// 플레이어 격발시 호출
 	UFUNCTION(BlueprintCallable)
 	void FirePressed();
-	// 플레이어 격발 중지시 호출
-	UFUNCTION(BlueprintCallable)
-	void FireReleased();
+
+	bool Fire();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Fire")
+	float FireBulletInterval;
 	
 protected:
 	// 탄환이 격발되는 시간 간격
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Fire")
-	float FireBulletInterval;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Fire")
 	EFireMode FireMode;
-
-	FTimerHandle FireTimerHandle;
-	
-	void Fire();
 	
 /* Reload */
 public:
