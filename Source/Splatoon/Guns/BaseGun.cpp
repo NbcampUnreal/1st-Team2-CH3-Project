@@ -80,6 +80,11 @@ bool ABaseGun::Fire()
 	return true;
 }
 
+int32 ABaseGun::GetRemainingBullets()
+{
+	return RemainingBullets;
+}
+
 void ABaseGun::Reload()
 {
 	if (RemainingBullets >= MaxRemainingBullets) return;
