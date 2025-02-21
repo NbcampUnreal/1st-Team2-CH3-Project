@@ -13,7 +13,8 @@ ABaseGun::ABaseGun()
 	
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMeshComp->SetupAttachment(GetRootComponent());
-	StaticMeshComp->SetCollisionProfileName(FName("CharacterMesh"));
+	StaticMeshComp->SetCollisionProfileName(FName("NoCollision"));
+	StaticMeshComp->SetReceivesDecals(false);
 	
 	FrontOfGun = CreateDefaultSubobject<USceneComponent>(TEXT("FrontOfGun"));
 	FrontOfGun->SetupAttachment(GetRootComponent());
