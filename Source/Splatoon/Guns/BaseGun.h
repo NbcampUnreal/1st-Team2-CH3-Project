@@ -65,9 +65,8 @@ protected:
 	
 /* Bullets */
 protected:
-	// TODO: AActor -> BaseBullet
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Bullets")
-	TSubclassOf<AActor> BulletClass;
+	TSubclassOf<class ABaseBullet> BulletClass;
 	
 	// 남은 탄환 수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Bullets")
