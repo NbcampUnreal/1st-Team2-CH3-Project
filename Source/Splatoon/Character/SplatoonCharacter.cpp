@@ -187,6 +187,8 @@ void ASplatoonCharacter::Look(const FInputActionValue& value)
 }
 void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 {
+	if (!GunClass) return;
+
 	if (!bIsTransformed && !bIsFire)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
@@ -195,7 +197,8 @@ void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 			this,
 			&ASplatoonCharacter::Attack,
 			Gun->FireBulletInterval,
-			true
+			true,
+			0.0f
 		);
 		
 		bIsFire = true;
