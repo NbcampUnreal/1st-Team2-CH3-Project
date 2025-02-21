@@ -13,6 +13,7 @@ ABaseGun::ABaseGun()
 	
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMeshComp->SetupAttachment(GetRootComponent());
+	StaticMeshComp->SetCollisionProfileName(FName("CharacterMesh"));
 	
 	FrontOfGun = CreateDefaultSubobject<USceneComponent>(TEXT("FrontOfGun"));
 	FrontOfGun->SetupAttachment(GetRootComponent());
@@ -32,11 +33,6 @@ ABaseGun::ABaseGun()
 void ABaseGun::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-void ABaseGun::FirePressed()
-{
-	Fire();
 }
 
 void ABaseGun::ReloadStart()
@@ -61,14 +57,19 @@ void ABaseGun::ReloadStop()
 	}
 }
 
+bool ABaseGun::CanFire() const
+{
+	return RemainingBullets > 0 && GetWorld();
+}
+
+
 bool ABaseGun::Fire()
 {
 	// 1. 남은 탄환 확인
-	if (RemainingBullets <= 0) return false;
-	if (GetWorld() == nullptr) return false;
+	if (!CanFire()) return false;
 
 	// 2. 탄환 감소
-	RemainingBullets -= 1;
+	AddRemainingBullets(-1);
 
 	// 3. 탄환 생성
 	GetWorld()->SpawnActor<AActor>(
@@ -81,12 +82,16 @@ bool ABaseGun::Fire()
 	return true;
 }
 
+bool ABaseGun::CanReload() const
+{
+	return RemainingBullets >= MaxRemainingBullets;
+}
+
 void ABaseGun::Reload()
 {
-	if (RemainingBullets >= MaxRemainingBullets) return;
+	if (!CanReload()) return;
 	
-	RemainingBullets += 1;
-	
+	AddRemainingBullets(1);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Reload / RemainingBullets = %d"), RemainingBullets));
 }
 
