@@ -11,6 +11,8 @@ enum class EFireMode : uint8
 	SemiAuto, // 단발
 };
 
+class ULiquidTank;
+
 UCLASS()
 class SPLATOON_API ABaseGun : public AActor
 {
@@ -83,5 +85,5 @@ public:
 	void SetLiquidTank(ULiquidTank* InLiquidTank);
 	
 protected:
-	class ULiquidTank* LiquidTank;
+	ULiquidTank* LiquidTank;
 };
