@@ -88,6 +88,11 @@ bool ABaseGun::CanReload() const
 	return RemainingBullets >= MaxRemainingBullets;
 }
 
+int32 ABaseGun::GetRemainingBullets() const
+{
+	return RemainingBullets;
+}
+
 void ABaseGun::Reload()
 {
 	if (!CanReload()) return;

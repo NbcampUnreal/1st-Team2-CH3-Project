@@ -37,6 +37,7 @@ protected:
 public:
 	bool CanFire() const;
 	bool Fire();
+	int32 GetRemainingBullets() const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Fire")
 	float FireBulletInterval;
