@@ -12,6 +12,13 @@ ASplatoonCharacter::ASplatoonCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	// Transform Charater
+	TransformMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TransformMesh"));
+	TransformMeshComp->SetupAttachment(GetMesh());
+	TransformMeshComp->SetVisibility(false);
+	TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+
 	// SpringArm
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmComp->SetupAttachment(RootComponent);
@@ -28,6 +35,9 @@ ASplatoonCharacter::ASplatoonCharacter()
 	// Paint
 	bIsPaint = false;
 
+	// Fire
+	bIsFire = false;
+
 	//Speed
 	Speed = 400.0f;
 	SpeedUp = 1.5f;
@@ -39,6 +49,17 @@ void ASplatoonCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (GunClass)
+	{
+		Gun = GetWorld()->SpawnActor<ABaseGun>(GunClass);
+
+		if (Gun)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+			Gun->AttachToComponent(GetMesh(), AttachmentRules, FName("hand_r"));
+		}
+	}
+
 }
 
 void ASplatoonCharacter::Tick(float DeltaTime)
@@ -108,7 +129,12 @@ void ASplatoonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 					PlayerController->FireAction,
 					ETriggerEvent::Triggered,
 					this,
-					&ASplatoonCharacter::Fire);
+					&ASplatoonCharacter::StartFire);
+				EnhancedInput->BindAction(
+					PlayerController->FireAction,
+					ETriggerEvent::Completed,
+					this,
+					&ASplatoonCharacter::StopFire);
 			}
 			if (PlayerController->TransforAction)
 			{
@@ -159,13 +185,33 @@ void ASplatoonCharacter::Look(const FInputActionValue& value)
 	AddControllerYawInput(LookInput.X);
 	AddControllerPitchInput(LookInput.Y);
 }
-void ASplatoonCharacter::Fire(const FInputActionValue& value)
+void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 {
-	if (!bIsTransformed)
+	if (!bIsTransformed && !bIsFire)
 	{
+		Gun->FirePressed();
+		GetWorldTimerManager().SetTimer(
+			FireTimerHandle,
+			Gun,
+			&ABaseGun::FirePressed,
+			Gun->FireBulletInterval,
+			true
+		);
+		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+		bIsFire = true;
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire")));
+
 	}
 }
+void ASplatoonCharacter::StopFire(const FInputActionValue& value)
+{
+	if (bIsFire)
+	{
+		GetWorldTimerManager().ClearTimer(FireTimerHandle);
+		bIsFire = false;
+	}
+}
+
 void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 {
 	if (!bIsTransformed)
@@ -179,6 +225,12 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 			true
 		);
 		bIsTransformed = true;
+
+		TransformMeshComp->SetVisibility(true);
+		TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+		GetMesh()->SetVisibility(false);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	else
 	{
@@ -186,6 +238,12 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 		GetCharacterMovement()->MaxWalkSpeed = Speed;
 		GetWorldTimerManager().ClearTimer(PaintCheckHandle);
 		bIsTransformed = false;
+
+		GetMesh()->SetVisibility(true);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+		TransformMeshComp->SetVisibility(false);
+		TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 

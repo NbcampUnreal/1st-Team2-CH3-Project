@@ -38,14 +38,6 @@ void ABaseGun::FirePressed()
 	Fire();
 }
 
-void ABaseGun::FireReleased()
-{
-	if (UWorld* World = GetWorld())
-	{
-		World->GetTimerManager().ClearTimer(FireTimerHandle);
-	}
-}
-
 void ABaseGun::ReloadStart()
 {
 	if (UWorld* World = GetWorld())
@@ -84,21 +76,6 @@ void ABaseGun::Fire()
 			FrontOfGun->GetComponentLocation(),
 			FrontOfGun->GetComponentRotation()
 		);
-	}
-
-	// 4. 연사 모드일 경우 타이머 설정
-	if (FireMode == EFireMode::FullAuto)
-	{
-		if (UWorld* World = GetWorld())
-		{
-			World->GetTimerManager().SetTimer
-			(
-				FireTimerHandle,
-				this,
-				&ABaseGun::Fire,
-				FireBulletInterval
-			);
-		}
 	}
 	
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Fire / RemainingBullets = %d"), RemainingBullets));
