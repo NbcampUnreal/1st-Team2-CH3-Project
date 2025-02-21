@@ -11,6 +11,8 @@ enum class EFireMode : uint8
 	SemiAuto, // 단발
 };
 
+class ULiquidTank;
+
 UCLASS()
 class SPLATOON_API ABaseGun : public AActor
 {
@@ -33,18 +35,15 @@ protected:
 	
 /* Fire */
 public:
-	// 플레이어 격발시 호출
-	UFUNCTION(BlueprintCallable)
-	void FirePressed();
+	bool CanFire() const;
 	bool Fire();
-	int32 GetRemainingBullets();
+	int32 GetRemainingBullets() const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Fire")
 	float FireBulletInterval;
 	
 protected:
 	// 탄환이 격발되는 시간 간격
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Fire")
 	EFireMode FireMode;
 	
@@ -63,14 +62,14 @@ protected:
 	float ReloadBulletInterval;
 	
 	FTimerHandle ReloadTimerHandle;
-	
+
+	bool CanReload() const;
 	void Reload();
 	
 /* Bullets */
 protected:
-	// TODO: AActor -> BaseBullet
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Bullets")
-	TSubclassOf<AActor> BulletClass;
+	TSubclassOf<class ABaseBullet> BulletClass;
 	
 	// 남은 탄환 수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Bullets")
@@ -79,4 +78,13 @@ protected:
 	// 최대 탄환 수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Bullets")
 	int32 MaxRemainingBullets;
+	
+	void AddRemainingBullets(const int Amount);
+	
+/* LiquidTank */
+public:
+	void SetLiquidTank(ULiquidTank* InLiquidTank);
+	
+protected:
+	ULiquidTank* LiquidTank;
 };
