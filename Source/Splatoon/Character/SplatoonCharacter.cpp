@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Splatoon/Guns/Magazine/LiquidTank.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
 
 ASplatoonCharacter::ASplatoonCharacter()
@@ -71,9 +72,9 @@ void ASplatoonCharacter::BeginPlay()
 		{
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
 			Gun->AttachToComponent(GetMesh(), AttachmentRules, FName("hand_r"));
+			Gun->SetLiquidTank(LiquidTank);
 		}
 	}
-
 }
 
 void ASplatoonCharacter::Tick(float DeltaTime)
