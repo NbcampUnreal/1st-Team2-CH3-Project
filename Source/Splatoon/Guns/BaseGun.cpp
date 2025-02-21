@@ -20,7 +20,7 @@ ABaseGun::ABaseGun()
 
 	/* Fire 초기화 */
 	FireMode = EFireMode::FullAuto;
-	FireBulletInterval = 0.1f;
+	FireBulletInterval = 0.2f;
 
 	/* Reload 초기화 */
 	ReloadBulletInterval = 0.1f;
