@@ -127,7 +127,7 @@ void ASplatoonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 			{
 				EnhancedInput->BindAction(
 					PlayerController->FireAction,
-					ETriggerEvent::Triggered,
+					ETriggerEvent::Started,
 					this,
 					&ASplatoonCharacter::StartFire);
 				EnhancedInput->BindAction(
@@ -189,15 +189,15 @@ void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 {
 	if (!bIsTransformed && !bIsFire)
 	{
-		Gun->FirePressed();
+		Gun->Fire();
 		GetWorldTimerManager().SetTimer(
 			FireTimerHandle,
-			Gun,
-			&ABaseGun::FirePressed,
+			this,
+			&ASplatoonCharacter::Attack,
 			Gun->FireBulletInterval,
 			true
 		);
-		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+		
 		bIsFire = true;
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire")));
 
@@ -256,5 +256,13 @@ void ASplatoonCharacter::UpdatePaintCheck()
 	else
 	{
 		GetCharacterMovement()->MaxWalkSpeed = Speed * SpeedDown;
+	}
+}
+
+void ASplatoonCharacter::Attack()
+{
+	if (Gun->Fire())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 	}
 }

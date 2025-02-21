@@ -60,25 +60,24 @@ void ABaseGun::ReloadStop()
 	}
 }
 
-void ABaseGun::Fire()
+bool ABaseGun::Fire()
 {
 	// 1. 남은 탄환 확인
-	if (RemainingBullets <= 0) return;
+	if (RemainingBullets <= 0) return false;
+	if (GetWorld() == nullptr) return false;
 
 	// 2. 탄환 감소
 	RemainingBullets -= 1;
 
 	// 3. 탄환 생성
-	if (UWorld* World = GetWorld())
-	{
-		World->SpawnActor<AActor>(
-			BulletClass,
-			FrontOfGun->GetComponentLocation(),
-			FrontOfGun->GetComponentRotation()
-		);
-	}
-	
+	GetWorld()->SpawnActor<AActor>(
+		BulletClass,
+		FrontOfGun->GetComponentLocation(),
+		FrontOfGun->GetComponentRotation()
+	);
+
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Fire / RemainingBullets = %d"), RemainingBullets));
+	return true;
 }
 
 void ABaseGun::Reload()

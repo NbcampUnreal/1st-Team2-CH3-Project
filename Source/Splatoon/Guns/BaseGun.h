@@ -37,6 +37,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void FirePressed();
 
+	bool Fire();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Fire")
 	float FireBulletInterval;
 	
@@ -45,8 +47,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Fire")
 	EFireMode FireMode;
-	
-	void Fire();
 	
 /* Reload */
 public:

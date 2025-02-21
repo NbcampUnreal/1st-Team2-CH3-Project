@@ -47,6 +47,7 @@ protected:
 	FTimerHandle FireTimerHandle;
 	ABaseGun* Gun;
 	bool bIsFire;
+	void Attack();
 
 public:	
 	virtual void Tick(float DeltaTime) override;
