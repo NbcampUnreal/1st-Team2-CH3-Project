@@ -33,10 +33,7 @@ protected:
 	
 /* Fire */
 public:
-	// 플레이어 격발시 호출
-	UFUNCTION(BlueprintCallable)
-	void FirePressed();
-
+	bool CanFire() const;
 	bool Fire();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Fire")
@@ -44,7 +41,6 @@ public:
 	
 protected:
 	// 탄환이 격발되는 시간 간격
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Gun|Fire")
 	EFireMode FireMode;
 	
@@ -63,7 +59,8 @@ protected:
 	float ReloadBulletInterval;
 	
 	FTimerHandle ReloadTimerHandle;
-	
+
+	bool CanReload() const;
 	void Reload();
 	
 /* Bullets */
