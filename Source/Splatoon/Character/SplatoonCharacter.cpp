@@ -189,7 +189,7 @@ void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 {
 	if (!bIsTransformed && !bIsFire)
 	{
-		Gun->Fire();
+		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 		GetWorldTimerManager().SetTimer(
 			FireTimerHandle,
 			this,
@@ -261,8 +261,5 @@ void ASplatoonCharacter::UpdatePaintCheck()
 
 void ASplatoonCharacter::Attack()
 {
-	if (Gun->Fire())
-	{
-		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
-	}
+	Gun->Fire();
 }
