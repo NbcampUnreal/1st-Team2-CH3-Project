@@ -10,6 +10,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class ULiquidTank;
 struct  FInputActionValue;
 
 UCLASS()
@@ -48,6 +49,11 @@ protected:
 	ABaseGun* Gun;
 	bool bIsFire;
 	void Attack();
+
+	// LiquidTank
+	UPROPERTY()
+	ULiquidTank* LiquidTank;
+	const int32 LiquidTankMaterialIndex = 4;
 
 public:	
 	virtual void Tick(float DeltaTime) override;

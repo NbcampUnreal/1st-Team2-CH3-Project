@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Splatoon/Guns/Magazine/LiquidTank.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
 
 ASplatoonCharacter::ASplatoonCharacter()
@@ -49,6 +50,20 @@ void ASplatoonCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Create Gun Magazine
+	{
+		LiquidTank = NewObject<ULiquidTank>(this, ULiquidTank::StaticClass());
+
+		if (LiquidTank && GetMesh())
+		{
+			if (UMaterialInstanceDynamic* LiquidTankMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(LiquidTankMaterialIndex), this))
+			{
+				GetMesh()->SetMaterial(LiquidTankMaterialIndex, LiquidTankMaterial);
+				LiquidTank->Init(LiquidTankMaterial);
+			}
+		}
+	}
+	
 	if (GunClass)
 	{
 		Gun = GetWorld()->SpawnActor<ABaseGun>(GunClass);
@@ -57,9 +72,9 @@ void ASplatoonCharacter::BeginPlay()
 		{
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
 			Gun->AttachToComponent(GetMesh(), AttachmentRules, FName("hand_r"));
+			Gun->SetLiquidTank(LiquidTank);
 		}
 	}
-
 }
 
 void ASplatoonCharacter::Tick(float DeltaTime)
@@ -79,7 +94,7 @@ void ASplatoonCharacter::CheckPaint()
 
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_GameTraceChannel1, Params);
 
-	// µ¥Ä® ÀÛ¾÷ ÈÄ º¯°æ ¿¹Á¤
+	// ï¿½ï¿½Ä® ï¿½Û¾ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (bHit)
 	{
 		bIsPaint = true;
