@@ -73,6 +73,7 @@ void ASplatoonCharacter::BeginPlay()
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
 			Gun->AttachToComponent(GetMesh(), AttachmentRules, FName("GunSocket"));
 			Gun->SetLiquidTank(LiquidTank);
+			Gun->SetInstigator(this);
 		}
 	}
 }
