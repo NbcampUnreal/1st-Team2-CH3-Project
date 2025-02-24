@@ -18,6 +18,26 @@ ABaseBullet::ABaseBullet()
 
 	// �浹 �̺�Ʈ ���ε�
 	BulletMeshComp->OnComponentHit.AddDynamic(this, &ABaseBullet::OnHit);
+
+	// Control
+	Speed = 2500.f;
+	TargetDistance = 2500.f;
+}
+
+void ABaseBullet::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// 총알 방향 계산
+	if (GetInstigator())
+	{
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetInstigator()->GetActorEyesViewPoint(CameraLocation, CameraRotation);
+		FVector TraceStart = CameraLocation;
+		FVector TraceEnd = TraceStart + (CameraRotation.Vector() * TargetDistance);
+		TargetDirection = (TraceEnd - GetActorLocation()).GetSafeNormal();;
+	}
 }
 
 void ABaseBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
