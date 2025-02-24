@@ -2,6 +2,7 @@
 #include "Magazine/LiquidTank.h"
 #include "Components/StaticMeshComponent.h"
 #include "Splatoon/Bullets/BaseBullet.h"
+#include "Splatoon/Character/SplatoonCharacter.h"
 
 ABaseGun::ABaseGun()
 {
@@ -73,11 +74,20 @@ bool ABaseGun::Fire()
 	AddRemainingBullets(-1);
 
 	// 3. 탄환 생성
-	GetWorld()->SpawnActor<AActor>(
-		BulletClass,
-		FrontOfGun->GetComponentLocation(),
-		FrontOfGun->GetComponentRotation()
-	);
+	if (APlayerController* Controller = GetWorld()->GetFirstPlayerController())
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this; // 총알을 생성한 액터              
+		SpawnParams.Instigator = Controller->GetPawn(); // 총알을 발사한 주체
+	
+		GetWorld()->SpawnActor<AActor>(
+			BulletClass,
+			FrontOfGun->GetComponentLocation(),
+			FrontOfGun->GetComponentRotation(),
+			SpawnParams
+		);
+	}
+	
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Fire / RemainingBullets = %d"), RemainingBullets));
 	return true;

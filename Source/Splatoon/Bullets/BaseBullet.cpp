@@ -12,24 +12,27 @@ ABaseBullet::ABaseBullet()
 	BulletMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BulletMesh"));
 	SetRootComponent(BulletMeshComp);
 
-	// Ãæµ¹ °¨Áö ¼³Á¤
+	// ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	BulletMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BulletMeshComp->SetNotifyRigidBodyCollision(true);
 
-	// Ãæµ¹ ÀÌº¥Æ® ¹ÙÀÎµù
+	// ï¿½æµ¹ ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½Îµï¿½
 	BulletMeshComp->OnComponentHit.AddDynamic(this, &ABaseBullet::OnHit);
 }
 
 void ABaseBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// BulletÀÌ Character³ª Pawn¿¡ Ãæµ¹ ½Ã µ¥Ä® »ý¼º X
+	// ëª©í‘œ ëŒ€ìƒì´ í”Œë ˆì´ì–´ì¸ ê²½ìš° 
+ 	if (OtherActor == GetInstigator()) return;
+
+	// Bulletì´ Characterë‚˜ Pawnì— ì¶©ëŒ ì‹œ ë°ì¹¼ ìƒì„± X
 	if (OtherActor && (OtherActor->IsA(ACharacter::StaticClass()) || OtherActor->IsA(APawn::StaticClass())))
 	{
 		OnBulletDestroyed();
 		return;
 	}
 
-	// PaintDecal »ý¼º
+	// PaintDecal ï¿½ï¿½ï¿½ï¿½
 	APaintDecal::SpawnPaintDecal(GetWorld(), Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
 
 	OnBulletDestroyed();
