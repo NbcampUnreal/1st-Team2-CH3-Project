@@ -3,7 +3,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
-#include "Splatoon/Character/SplatoonCharacter.h"
 
 
 ABaseBullet::ABaseBullet()
