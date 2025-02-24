@@ -5,7 +5,7 @@
 
 AStandardBullet::AStandardBullet()
 {
-	// ÅºÈ¯ ¸Þ½¬
+	// ÅºÈ¯ ï¿½Þ½ï¿½
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	if (SphereMesh.Succeeded())
 	{
@@ -14,7 +14,7 @@ AStandardBullet::AStandardBullet()
 
 	BulletMeshComp->SetRelativeScale3D(FVector(0.2f));
 
-	// ÅºÈ¯ µ¿ÀÛ
+	// ÅºÈ¯ ï¿½ï¿½ï¿½ï¿½
 	BulletMeshComp->SetSimulatePhysics(true);
 	BulletMeshComp->SetEnableGravity(true);
 	BulletMeshComp->SetCollisionProfileName(TEXT("BlockAll"));
@@ -23,10 +23,10 @@ AStandardBullet::AStandardBullet()
 void AStandardBullet::BeginPlay()
 {
 	Super::BeginPlay();
-
-	BulletMeshComp->SetPhysicsLinearVelocity(GetActorForwardVector() * 1000.f); // ÃÊ±â ¼Óµµ ¼³Á¤
-	BulletMeshComp->SetMassOverrideInKg(NAME_None, 2.f); // Áú·® Áõ°¡
-	BulletMeshComp->SetLinearDamping(0.5f); // °ø±â ÀúÇ× Àû¿ë
+	
+	BulletMeshComp->SetPhysicsLinearVelocity(TargetDirection * Speed); // ï¿½Ê±ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½
+	BulletMeshComp->SetMassOverrideInKg(NAME_None, 2.f); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	BulletMeshComp->SetLinearDamping(0.5f); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	BulletMeshComp->SetAngularDamping(0.5f);
 }
 
