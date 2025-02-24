@@ -6,11 +6,19 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Splatoon/Guns/Magazine/LiquidTank.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
 
 ASplatoonCharacter::ASplatoonCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	// Transform Charater
+	TransformMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TransformMesh"));
+	TransformMeshComp->SetupAttachment(GetMesh());
+	TransformMeshComp->SetVisibility(false);
+	TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 
 	// SpringArm
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -28,6 +36,9 @@ ASplatoonCharacter::ASplatoonCharacter()
 	// Paint
 	bIsPaint = false;
 
+	// Fire
+	bIsFire = false;
+
 	//Speed
 	Speed = 400.0f;
 	SpeedUp = 1.5f;
@@ -39,6 +50,32 @@ void ASplatoonCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Create Gun Magazine
+	{
+		LiquidTank = NewObject<ULiquidTank>(this, ULiquidTank::StaticClass());
+
+		if (LiquidTank && GetMesh())
+		{
+			if (UMaterialInstanceDynamic* LiquidTankMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(LiquidTankMaterialIndex), this))
+			{
+				GetMesh()->SetMaterial(LiquidTankMaterialIndex, LiquidTankMaterial);
+				LiquidTank->Init(LiquidTankMaterial);
+			}
+		}
+	}
+	
+	if (GunClass)
+	{
+		Gun = GetWorld()->SpawnActor<ABaseGun>(GunClass);
+
+		if (Gun)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+			Gun->AttachToComponent(GetMesh(), AttachmentRules, FName("GunSocket"));
+			Gun->SetLiquidTank(LiquidTank);
+			Gun->SetInstigator(this);
+		}
+	}
 }
 
 void ASplatoonCharacter::Tick(float DeltaTime)
@@ -58,7 +95,7 @@ void ASplatoonCharacter::CheckPaint()
 
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_GameTraceChannel1, Params);
 
-	// µ¥Ä® ÀÛ¾÷ ÈÄ º¯°æ ¿¹Á¤
+	// ï¿½ï¿½Ä® ï¿½Û¾ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (bHit)
 	{
 		bIsPaint = true;
@@ -106,9 +143,14 @@ void ASplatoonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 			{
 				EnhancedInput->BindAction(
 					PlayerController->FireAction,
-					ETriggerEvent::Triggered,
+					ETriggerEvent::Started,
 					this,
-					&ASplatoonCharacter::Fire);
+					&ASplatoonCharacter::StartFire);
+				EnhancedInput->BindAction(
+					PlayerController->FireAction,
+					ETriggerEvent::Completed,
+					this,
+					&ASplatoonCharacter::StopFire);
 			}
 			if (PlayerController->TransforAction)
 			{
@@ -159,13 +201,38 @@ void ASplatoonCharacter::Look(const FInputActionValue& value)
 	AddControllerYawInput(LookInput.X);
 	AddControllerPitchInput(LookInput.Y);
 }
-void ASplatoonCharacter::Fire(const FInputActionValue& value)
+void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 {
-	if (!bIsTransformed)
+	if (!GunClass) return;
+
+	if (!bIsTransformed && !bIsFire)
 	{
+		if (Gun->GetRemainingBullets() <= 0) return;
+
+		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+		GetWorldTimerManager().SetTimer(
+			FireTimerHandle,
+			this,
+			&ASplatoonCharacter::Attack,
+			Gun->FireBulletInterval,
+			true,
+			0.0f
+		);
+		
+		bIsFire = true;
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire")));
+
 	}
 }
+void ASplatoonCharacter::StopFire(const FInputActionValue& value)
+{
+	if (bIsFire)
+	{
+		GetWorldTimerManager().ClearTimer(FireTimerHandle);
+		bIsFire = false;
+	}
+}
+
 void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 {
 	if (!bIsTransformed)
@@ -179,6 +246,12 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 			true
 		);
 		bIsTransformed = true;
+
+		TransformMeshComp->SetVisibility(true);
+		TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+		GetMesh()->SetVisibility(false);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	else
 	{
@@ -186,6 +259,12 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 		GetCharacterMovement()->MaxWalkSpeed = Speed;
 		GetWorldTimerManager().ClearTimer(PaintCheckHandle);
 		bIsTransformed = false;
+
+		GetMesh()->SetVisibility(true);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+		TransformMeshComp->SetVisibility(false);
+		TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
@@ -199,4 +278,9 @@ void ASplatoonCharacter::UpdatePaintCheck()
 	{
 		GetCharacterMovement()->MaxWalkSpeed = Speed * SpeedDown;
 	}
+}
+
+void ASplatoonCharacter::Attack()
+{
+	Gun->Fire();
 }

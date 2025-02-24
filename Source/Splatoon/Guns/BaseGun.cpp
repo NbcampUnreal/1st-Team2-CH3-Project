@@ -1,6 +1,8 @@
 #include "BaseGun.h"
-
-#include "Kismet/GameplayStatics.h"
+#include "Magazine/LiquidTank.h"
+#include "Components/StaticMeshComponent.h"
+#include "Splatoon/Bullets/BaseBullet.h"
+#include "Splatoon/Character/SplatoonCharacter.h"
 
 ABaseGun::ABaseGun()
 {
@@ -12,13 +14,15 @@ ABaseGun::ABaseGun()
 	
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMeshComp->SetupAttachment(GetRootComponent());
+	StaticMeshComp->SetCollisionProfileName(FName("NoCollision"));
+	StaticMeshComp->SetReceivesDecals(false);
 	
 	FrontOfGun = CreateDefaultSubobject<USceneComponent>(TEXT("FrontOfGun"));
 	FrontOfGun->SetupAttachment(GetRootComponent());
 
 	/* Fire 초기화 */
 	FireMode = EFireMode::FullAuto;
-	FireBulletInterval = 0.1f;
+	FireBulletInterval = 0.2f;
 
 	/* Reload 초기화 */
 	ReloadBulletInterval = 0.1f;
@@ -31,19 +35,6 @@ ABaseGun::ABaseGun()
 void ABaseGun::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-void ABaseGun::FirePressed()
-{
-	Fire();
-}
-
-void ABaseGun::FireReleased()
-{
-	if (UWorld* World = GetWorld())
-	{
-		World->GetTimerManager().ClearTimer(FireTimerHandle);
-	}
 }
 
 void ABaseGun::ReloadStart()
@@ -68,47 +59,69 @@ void ABaseGun::ReloadStop()
 	}
 }
 
-void ABaseGun::Fire()
+bool ABaseGun::CanFire() const
+{
+	return RemainingBullets > 0 && GetWorld();
+}
+
+
+bool ABaseGun::Fire()
 {
 	// 1. 남은 탄환 확인
-	if (RemainingBullets <= 0) return;
+	if (!CanFire()) return false;
 
 	// 2. 탄환 감소
-	RemainingBullets -= 1;
+	AddRemainingBullets(-1);
 
 	// 3. 탄환 생성
-	if (UWorld* World = GetWorld())
+	if (APlayerController* Controller = GetWorld()->GetFirstPlayerController())
 	{
-		World->SpawnActor<AActor>(
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this; // 총알을 생성한 액터              
+		SpawnParams.Instigator = Controller->GetPawn(); // 총알을 발사한 주체
+	
+		GetWorld()->SpawnActor<AActor>(
 			BulletClass,
 			FrontOfGun->GetComponentLocation(),
-			FrontOfGun->GetComponentRotation()
+			FrontOfGun->GetComponentRotation(),
+			SpawnParams
 		);
 	}
-
-	// 4. 연사 모드일 경우 타이머 설정
-	if (FireMode == EFireMode::FullAuto)
-	{
-		if (UWorld* World = GetWorld())
-		{
-			World->GetTimerManager().SetTimer
-			(
-				FireTimerHandle,
-				this,
-				&ABaseGun::Fire,
-				FireBulletInterval
-			);
-		}
-	}
 	
+
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Fire / RemainingBullets = %d"), RemainingBullets));
+	return true;
+}
+
+bool ABaseGun::CanReload() const
+{
+	return RemainingBullets >= MaxRemainingBullets;
+}
+
+int32 ABaseGun::GetRemainingBullets() const
+{
+	return RemainingBullets;
 }
 
 void ABaseGun::Reload()
 {
-	if (RemainingBullets >= MaxRemainingBullets) return;
+	if (!CanReload()) return;
 	
-	RemainingBullets += 1;
-	
+	AddRemainingBullets(1);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Reload / RemainingBullets = %d"), RemainingBullets));
+}
+
+void ABaseGun::AddRemainingBullets(const int Amount)
+{
+	RemainingBullets = FMath::Clamp(RemainingBullets + Amount, 0, MaxRemainingBullets);
+
+	if (LiquidTank)
+	{
+		LiquidTank->SetPercent(static_cast<float>(RemainingBullets) / MaxRemainingBullets);
+	}
+}
+
+void ABaseGun::SetLiquidTank(ULiquidTank* InLiquidTank)
+{
+	LiquidTank = InLiquidTank;
 }
