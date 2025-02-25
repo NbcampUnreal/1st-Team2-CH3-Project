@@ -53,7 +53,7 @@ ASplatoonCharacter::ASplatoonCharacter()
 	//Speed
 	Speed = 400.0f;
 	SpeedUp = 1.5f;
-	SpeedDown = 0.7f;
+	SpeedDown = 0.3f;
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
