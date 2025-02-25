@@ -6,12 +6,14 @@
 #include "GameFramework/Character.h"
 #include "Splatoon/Guns/BaseGun.h"
 #include "Animation/AnimMontage.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 #include "SplatoonCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 class ULiquidTank;
-struct  FInputActionValue;
+struct FInputActionValue;
 
 UCLASS()
 class SPLATOON_API ASplatoonCharacter : public ACharacter
@@ -54,6 +56,16 @@ protected:
 	UPROPERTY()
 	ULiquidTank* LiquidTank;
 	const int32 LiquidTankMaterialIndex = 4;
+
+	// Excluding collision
+	FCollisionQueryParams QueryParams;
+
+	// Niagara
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	UNiagaraSystem* NiagaraPaintEffect;
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	UNiagaraComponent* NiagaraPaintComponent;
+
 
 public:	
 	virtual void Tick(float DeltaTime) override;
