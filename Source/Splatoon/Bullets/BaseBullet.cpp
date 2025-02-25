@@ -50,9 +50,9 @@ void ABaseBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		OnBulletDestroyed();
 		return;
 	}
-
+	
 	// PaintDecal 생성
-	APaintDecal::SpawnPaintDecal(GetWorld(), Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
+	APaintDecal::SpawnPaintDecal(GetWorld(), Hit.ImpactPoint, (-Hit.ImpactNormal).Rotation());
 
 	OnBulletDestroyed();
 }
