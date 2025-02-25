@@ -17,7 +17,6 @@ AStandardBullet::AStandardBullet()
 	// źȯ ����
 	BulletMeshComp->SetSimulatePhysics(true);
 	BulletMeshComp->SetEnableGravity(true);
-	BulletMeshComp->SetCollisionProfileName(TEXT("BlockAll"));
 }
 
 void AStandardBullet::BeginPlay()

@@ -14,9 +14,8 @@ ABaseBullet::ABaseBullet()
 
 	// �浹 ���� ����
 	BulletMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	BulletMeshComp->SetCollisionResponseToAllChannels(ECR_Block);
 	BulletMeshComp->SetNotifyRigidBodyCollision(true);
-
-	// �浹 �̺�Ʈ ���ε�
 	BulletMeshComp->OnComponentHit.AddDynamic(this, &ABaseBullet::OnHit);
 
 	// Control
@@ -52,7 +51,7 @@ void ABaseBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		return;
 	}
 
-	// PaintDecal ����
+	// PaintDecal 생성
 	APaintDecal::SpawnPaintDecal(GetWorld(), Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
 
 	OnBulletDestroyed();
