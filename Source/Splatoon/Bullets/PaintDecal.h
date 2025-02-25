@@ -27,5 +27,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet|Paint")
 	FVector DecalSize;
 
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	class UBoxComponent* CollisionBox;
+
 	virtual void BeginPlay() override;
 };

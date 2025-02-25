@@ -18,6 +18,13 @@ ASplatoonCharacter::ASplatoonCharacter()
 	TransformMeshComp->SetupAttachment(GetMesh());
 	TransformMeshComp->SetVisibility(false);
 	TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TransformMeshComp->SetWorldScale3D(FVector3d(15.0f, 15.0f, 15.0f));
+	TransformMeshComp->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+
+	//Niagara
+	NiagaraPaintComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+	NiagaraPaintComponent->SetupAttachment(GetMesh());
+	NiagaraPaintComponent->SetAutoActivate(false);
 	
 
 	// SpringArm
@@ -75,30 +82,21 @@ void ASplatoonCharacter::BeginPlay()
 			Gun->SetLiquidTank(LiquidTank);
 		}
 	}
+
+	// Niagara
+	if (NiagaraPaintEffect)
+	{
+		NiagaraPaintComponent->SetAsset(NiagaraPaintEffect);
+	}
+
+	// Excluding collision
+	QueryParams.AddIgnoredActor(this);
 }
 
 void ASplatoonCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void ASplatoonCharacter::CheckPaint()
-{
-	FVector Start = GetActorLocation();
-	FVector End = Start - FVector(0, 0, 200.0f);
-
-	FHitResult HitResult;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_GameTraceChannel1, Params);
-
-	// ��Į �۾� �� ���� ����
-	if (bHit)
-	{
-		bIsPaint = true;
-	}
 }
 
 void ASplatoonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -242,15 +240,16 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 			this,
 			&ASplatoonCharacter::UpdatePaintCheck,
 			0.01f,
-			true
+			true,
+			0.0f
 		);
 		bIsTransformed = true;
 
-		TransformMeshComp->SetVisibility(true);
-		TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
 		GetMesh()->SetVisibility(false);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Gun->SetActorHiddenInGame(true);
+
+		Crouch();
 	}
 	else
 	{
@@ -261,21 +260,73 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 
 		GetMesh()->SetVisibility(true);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		Gun->SetActorHiddenInGame(false);
 
-		TransformMeshComp->SetVisibility(false);
-		TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		if (TransformMeshComp->IsVisible() == true)
+		{
+			TransformMeshComp->SetVisibility(false);
+			TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+
+		if (NiagaraPaintComponent->IsActive())
+		{
+			NiagaraPaintComponent->Deactivate();
+		}
+
+		UnCrouch();
+	}
+}
+
+void ASplatoonCharacter::CheckPaint()
+{
+	FVector Start = GetActorLocation();
+	FVector End = Start - FVector(0, 0, 2000.0f);
+
+	FHitResult HitResult;
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams);
+
+	if (bHit)
+	{
+		AActor* HitActor = HitResult.GetActor();
+		if (HitActor && HitActor->ActorHasTag("PaintDecal"))
+		{
+			bIsPaint = true;
+		}
+		else
+		{
+			bIsPaint = false;
+		}
 	}
 }
 
 void ASplatoonCharacter::UpdatePaintCheck()
 {
+	CheckPaint();
 	if (bIsPaint)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = Speed * SpeedUp;
+		if (NiagaraPaintComponent)
+		{
+			NiagaraPaintComponent->Activate();
+		}
+
+		if (TransformMeshComp->IsVisible() == true)
+		{
+			TransformMeshComp->SetVisibility(false);
+			TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
 	}
 	else
 	{
 		GetCharacterMovement()->MaxWalkSpeed = Speed * SpeedDown;
+		TransformMeshComp->SetVisibility(true);
+		TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+		if (NiagaraPaintComponent->IsActive())
+		{
+			NiagaraPaintComponent->Deactivate();
+		}
 	}
 }
 
