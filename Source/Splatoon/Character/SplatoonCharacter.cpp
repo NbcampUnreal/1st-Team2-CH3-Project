@@ -13,6 +13,9 @@ ASplatoonCharacter::ASplatoonCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	// Main Character
+	GetMesh()->SetReceivesDecals(false);
+	
 	// Transform Charater
 	TransformMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TransformMesh"));
 	TransformMeshComp->SetupAttachment(GetMesh());
@@ -20,6 +23,7 @@ ASplatoonCharacter::ASplatoonCharacter()
 	TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TransformMeshComp->SetWorldScale3D(FVector3d(15.0f, 15.0f, 15.0f));
 	TransformMeshComp->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+	TransformMeshComp->SetReceivesDecals(false);
 
 	//Niagara
 	NiagaraPaintComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
