@@ -13,6 +13,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class ULiquidTank;
+class UUserWidget;
 struct FInputActionValue;
 
 UCLASS()
@@ -72,6 +73,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	UNiagaraComponent* NiagaraPaintComponent;
 
+	// Effect
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> HitEffectWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* HitEffectWidget;
+
 
 public:	
 	virtual void Tick(float DeltaTime) override;
@@ -121,4 +129,5 @@ public:
 	void StopFire(const FInputActionValue& value);
 	UFUNCTION()
 	void Transfor(const FInputActionValue& value);
+
 };

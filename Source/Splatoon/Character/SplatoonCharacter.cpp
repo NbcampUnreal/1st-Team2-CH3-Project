@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Splatoon/Guns/Magazine/LiquidTank.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -102,6 +103,13 @@ void ASplatoonCharacter::BeginPlay()
 
 	// Excluding collision
 	QueryParams.AddIgnoredActor(this);
+
+	// Effect
+	if (HitEffectWidgetClass)
+	{
+		HitEffectWidget = CreateWidget<UUserWidget>(GetWorld(), HitEffectWidgetClass);
+	}
+	
 }
 
 void ASplatoonCharacter::Tick(float DeltaTime)
@@ -371,6 +379,12 @@ void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
 	FVector Knockback = KnockbackDirection * KnockbackStrength;
 
 	LaunchCharacter(Knockback, true, true);
+	
+	if (HitEffectWidget)
+	{
+		HitEffectWidget->RemoveFromParent();
+		HitEffectWidget->AddToViewport();
+	}
 }
 
 void ASplatoonCharacter::OnDeath()
