@@ -98,7 +98,7 @@ bool ABaseGun::Fire()
 
 bool ABaseGun::CanReload() const
 {
-	return RemainingBullets >= MaxRemainingBullets;
+	return RemainingBullets < MaxRemainingBullets;
 }
 
 int32 ABaseGun::GetRemainingBullets() const
@@ -108,7 +108,7 @@ int32 ABaseGun::GetRemainingBullets() const
 
 void ABaseGun::Reload()
 {
-	if (CanReload()) return;
+	if (!CanReload()) return;
 	
 	AddRemainingBullets(1);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Reload / RemainingBullets = %d"), RemainingBullets));
