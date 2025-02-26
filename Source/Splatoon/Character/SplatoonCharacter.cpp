@@ -375,19 +375,16 @@ void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
 
 void ASplatoonCharacter::OnDeath()
 {
-
-}
-
-void ASplatoonCharacter::OnDropDeath()
-{
 	AController* PlayerController = GetController();
 	if (PlayerController)
 	{
 		PlayerController->DisableInput(Cast<ASplatoonPlayerController>(PlayerController));
 		bUseControllerRotationYaw = false;
 	}
+}
 
-
+void ASplatoonCharacter::OnDropDeath()
+{
 	if (!CameraComp) return;
 	ASplatoonPlayerController* NewPlayerController = Cast<ASplatoonPlayerController>(GetController());
 
