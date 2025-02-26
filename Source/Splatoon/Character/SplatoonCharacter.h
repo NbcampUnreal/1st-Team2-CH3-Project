@@ -97,7 +97,7 @@ public:
 	TSubclassOf<ABaseGun> GunClass;
 
 	// Damage
-	int32 TakeDamage();
+	void TakeDamage();
 	void OnDeath();
 
 	// Input Function

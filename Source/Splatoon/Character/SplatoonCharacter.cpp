@@ -350,7 +350,7 @@ void ASplatoonCharacter::Attack()
 	Gun->Fire();
 }
 
-int32 ASplatoonCharacter::TakeDamage()
+void ASplatoonCharacter::TakeDamage()
 {
 	Health--;
 
