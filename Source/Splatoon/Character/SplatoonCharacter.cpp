@@ -350,14 +350,25 @@ void ASplatoonCharacter::Attack()
 	Gun->Fire();
 }
 
-void ASplatoonCharacter::TakeDamage()
+void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
 {
 	Health--;
 
 	if (Health <= 0)
 	{
 		OnDeath();
+		return;
 	}
+
+	FVector PlayerLocation = GetActorLocation();
+	FVector AttackerLocation = DamageCauser->GetActorLocation();
+
+	FVector KnockbackDirection = (PlayerLocation - AttackerLocation).GetSafeNormal();
+
+	float KnockbackStrength = 500.0f;
+	FVector Knockback = KnockbackDirection * KnockbackStrength;
+
+	LaunchCharacter(Knockback, true, true);
 }
 
 void ASplatoonCharacter::OnDeath()

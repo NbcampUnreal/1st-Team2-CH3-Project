@@ -41,13 +41,16 @@ void ABaseGun::ReloadStart()
 {
 	if (UWorld* World = GetWorld())
 	{
-		World->GetTimerManager().SetTimer(
-			ReloadTimerHandle,
-			this,
-			&ABaseGun::Reload,
-			ReloadBulletInterval,
-			true
-		);
+		if (!World->GetTimerManager().IsTimerActive(ReloadTimerHandle))
+		{
+			World->GetTimerManager().SetTimer(
+				ReloadTimerHandle,
+				this,
+				&ABaseGun::Reload,
+				ReloadBulletInterval,
+				true
+			);
+		}
 	}
 }
 
@@ -55,10 +58,7 @@ void ABaseGun::ReloadStop()
 {
 	if (UWorld* World = GetWorld())
 	{
-		if (World->GetTimerManager().IsTimerActive(ReloadTimerHandle))
-		{
-			World->GetTimerManager().ClearTimer(ReloadTimerHandle);
-		}
+		World->GetTimerManager().ClearTimer(ReloadTimerHandle);
 	}
 }
 
@@ -108,7 +108,7 @@ int32 ABaseGun::GetRemainingBullets() const
 
 void ABaseGun::Reload()
 {
-	if (!CanReload()) return;
+	if (CanReload()) return;
 	
 	AddRemainingBullets(1);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Reload / RemainingBullets = %d"), RemainingBullets));

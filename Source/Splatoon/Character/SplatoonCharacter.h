@@ -97,7 +97,7 @@ public:
 	TSubclassOf<ABaseGun> GunClass;
 
 	// Damage
-	void TakeDamage();
+	void TakeDamage(AActor* DamageCauser);
 	void OnDeath();
 
 	// Input Function
