@@ -9,6 +9,8 @@
 #include "Blueprint/UserWidget.h"
 #include "Splatoon/Guns/Magazine/LiquidTank.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 ASplatoonCharacter::ASplatoonCharacter()
 {
@@ -387,5 +389,28 @@ void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
 
 void ASplatoonCharacter::OnDeath()
 {
+	AController* PlayerController = GetController();
+	if (PlayerController)
+	{
+		PlayerController->DisableInput(Cast<ASplatoonPlayerController>(PlayerController));
+		bUseControllerRotationYaw = false;
+	}
+}
 
+void ASplatoonCharacter::OnDropDeath()
+{
+	if (!CameraComp) return;
+	ASplatoonPlayerController* NewPlayerController = Cast<ASplatoonPlayerController>(GetController());
+
+	AActor* DeathCamera = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), GetActorLocation() + FVector(0, 0, 300), FRotator(-90, 0, 0));
+
+	NewPlayerController->SetViewTargetWithBlend(DeathCamera, 3.0f);
+
+	GetWorldTimerManager().SetTimer(
+		DropTimerHandle,
+		this,
+		&ASplatoonCharacter::OnDeath,
+		1.0f,
+		false
+	);
 }
