@@ -55,6 +55,10 @@ ASplatoonCharacter::ASplatoonCharacter()
 	SpeedUp = 1.5f;
 	SpeedDown = 0.3f;
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
+
+	// HP
+	MaxHealth = 3;
+	Health = MaxHealth;
 }
 
 void ASplatoonCharacter::BeginPlay()
@@ -278,6 +282,8 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 			NiagaraPaintComponent->Deactivate();
 		}
 
+		Gun->ReloadStop();
+
 		UnCrouch();
 	}
 }
@@ -321,6 +327,8 @@ void ASplatoonCharacter::UpdatePaintCheck()
 			TransformMeshComp->SetVisibility(false);
 			TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
+
+		Gun->ReloadStart();
 	}
 	else
 	{
@@ -332,10 +340,27 @@ void ASplatoonCharacter::UpdatePaintCheck()
 		{
 			NiagaraPaintComponent->Deactivate();
 		}
+
+		Gun->ReloadStop();
 	}
 }
 
 void ASplatoonCharacter::Attack()
 {
 	Gun->Fire();
+}
+
+int32 ASplatoonCharacter::TakeDamage()
+{
+	Health--;
+
+	if (Health <= 0)
+	{
+		OnDeath();
+	}
+}
+
+void ASplatoonCharacter::OnDeath()
+{
+
 }

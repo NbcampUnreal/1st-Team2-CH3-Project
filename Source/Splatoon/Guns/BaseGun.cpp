@@ -55,7 +55,10 @@ void ABaseGun::ReloadStop()
 {
 	if (UWorld* World = GetWorld())
 	{
-		World->GetTimerManager().ClearTimer(ReloadTimerHandle);
+		if (World->GetTimerManager().IsTimerActive(ReloadTimerHandle))
+		{
+			World->GetTimerManager().ClearTimer(ReloadTimerHandle);
+		}
 	}
 }
 

@@ -31,6 +31,12 @@ protected:
 	float SpeedUp;
 	float SpeedDown;
 
+	// HP
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	int32 MaxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	int32 Health;
+
 	// Character form
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Transform")
 	bool bIsTransformed;
@@ -89,6 +95,10 @@ public:
 	// Gun
 	UPROPERTY(EditDefaultsOnly, Category = "Gun")
 	TSubclassOf<ABaseGun> GunClass;
+
+	// Damage
+	int32 TakeDamage();
+	void OnDeath();
 
 	// Input Function
 	UFUNCTION()
