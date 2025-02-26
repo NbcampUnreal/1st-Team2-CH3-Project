@@ -13,8 +13,7 @@ ABaseBullet::ABaseBullet()
 	SetRootComponent(BulletMeshComp);
 
 	// �浹 ���� ����
-	BulletMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	BulletMeshComp->SetCollisionResponseToAllChannels(ECR_Block);
+	BulletMeshComp->SetCollisionProfileName(TEXT("Bullet"));
 	BulletMeshComp->SetNotifyRigidBodyCollision(true);
 	BulletMeshComp->OnComponentHit.AddDynamic(this, &ABaseBullet::OnHit);
 
