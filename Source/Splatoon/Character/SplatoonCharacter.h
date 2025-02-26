@@ -98,7 +98,13 @@ public:
 
 	// Damage
 	void TakeDamage(AActor* DamageCauser);
+
+	// Death
+	UFUNCTION()
 	void OnDeath();
+	UFUNCTION()
+	void OnDropDeath();
+	FTimerHandle DropTimerHandle;
 
 	// Input Function
 	UFUNCTION()
@@ -115,5 +121,4 @@ public:
 	void StopFire(const FInputActionValue& value);
 	UFUNCTION()
 	void Transfor(const FInputActionValue& value);
-
 };
