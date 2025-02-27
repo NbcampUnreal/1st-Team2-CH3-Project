@@ -1,22 +1,29 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PaintDecal.generated.h"
+#include "EnemyPaintDecal.generated.h"
 
 class UDecalComponent;
 class UMaterialInterface;
 class UPaintDecalManager;
 
 UCLASS()
-class SPLATOON_API APaintDecal : public AActor
+class SPLATOON_API AEnemyPaintDecal : public AActor
 {
 	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	AEnemyPaintDecal();
 
-public:
-	APaintDecal();
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
-public:
+public:	
 	static void SpawnPaintDecal(UWorld* World, const FVector& Location, const FRotator& Rotator);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet|Paint")
@@ -31,5 +38,4 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	class UBoxComponent* CollisionBox;
 
-	virtual void BeginPlay() override;
 };

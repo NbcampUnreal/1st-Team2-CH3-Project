@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PaintDecal.h"
 #include "GameFramework/Actor.h"
 #include "BaseBullet.generated.h"
 
@@ -10,13 +11,13 @@ UCLASS()
 class SPLATOON_API ABaseBullet : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ABaseBullet();
 
 protected:
 	virtual void BeginPlay() override;
-	
+
 	UPROPERTY(VisibleAnywhere, Category = "Bullet|Component")
 	UStaticMeshComponent* BulletMeshComp;
 
@@ -25,10 +26,10 @@ protected:
 
 	virtual void OnBulletDestroyed();
 
-/* Control */
+	/* Control */
 protected:
 	FVector TargetDirection;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet | Control")
 	float TargetDistance;
 

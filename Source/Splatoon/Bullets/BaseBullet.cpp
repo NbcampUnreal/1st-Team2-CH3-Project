@@ -1,5 +1,6 @@
 #include "BaseBullet.h"
 #include "PaintDecal.h"
+#include "EnemyPaintDecal.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
@@ -41,7 +42,7 @@ void ABaseBullet::BeginPlay()
 void ABaseBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// 목표 대상이 플레이어인 경우 
- 	if (OtherActor == GetInstigator()) return;
+	if (OtherActor == GetInstigator()) return;
 
 	// Bullet이 Character나 Pawn에 충돌 시 데칼 생성 X
 	if (OtherActor && (OtherActor->IsA(ACharacter::StaticClass()) || OtherActor->IsA(APawn::StaticClass())))
@@ -49,9 +50,17 @@ void ABaseBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		OnBulletDestroyed();
 		return;
 	}
-	
+
 	// PaintDecal 생성
-	APaintDecal::SpawnPaintDecal(GetWorld(), Hit.ImpactPoint, (-Hit.ImpactNormal).Rotation());
+	APlayerController* Controller = GetWorld()->GetFirstPlayerController();
+	if (GetInstigatorController() == Controller) 
+	{
+		APaintDecal::SpawnPaintDecal(GetWorld(), Hit.ImpactPoint, (-Hit.ImpactNormal).Rotation());
+	}
+	else 
+	{
+		AEnemyPaintDecal::SpawnPaintDecal(GetWorld(), Hit.ImpactPoint, (-Hit.ImpactNormal).Rotation());
+	}
 
 	OnBulletDestroyed();
 }
@@ -60,4 +69,3 @@ void ABaseBullet::OnBulletDestroyed()
 {
 	Destroy();
 }
-

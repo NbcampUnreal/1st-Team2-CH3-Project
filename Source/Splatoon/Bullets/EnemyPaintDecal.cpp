@@ -1,10 +1,14 @@
-#include "PaintDecal.h"
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "EnemyPaintDecal.h"
 #include "PaintDecalManager.h"
 #include "Components/DecalComponent.h"
 #include "Components/BoxComponent.h"
 #include "Materials/MaterialInterface.h"
 
-APaintDecal::APaintDecal()
+// Sets default values
+AEnemyPaintDecal::AEnemyPaintDecal()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -26,21 +30,20 @@ APaintDecal::APaintDecal()
 	// UMaterialInterface* DMaterial = Cast<UMaterialInterface>(StaticLoadObject(UObject::StaticClass(), nullptr, *DecalPath));
 
 	// /Game/Resources/Materials/M_PaintDecal.M_PaintDecal
-	
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> PaintDecalMaterial(TEXT("/Game/Resources/Materials/M_PaintDecal.M_PaintDecal"));
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> PaintDecalMaterial(TEXT("/Game/Resources/Materials/M_EnemyPaintDecal.M_EnemyPaintDecal"));
 	if (PaintDecalMaterial.Succeeded())
 	{
 		DecalMaterial = PaintDecalMaterial.Object;
 	}
 	DecalSize = FVector(1.f);
-
-	Tags.Add(FName("PaintDecal"));
 }
 
-void APaintDecal::BeginPlay()
+// Called when the game starts or when spawned
+void AEnemyPaintDecal::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (DecalComp && DecalMaterial)
 	{
 		DecalComp->SetDecalMaterial(DecalMaterial);
@@ -54,10 +57,12 @@ void APaintDecal::BeginPlay()
 	}
 }
 
-void APaintDecal::SpawnPaintDecal(UWorld* World, const FVector& Location, const FRotator& Rotator)
+void AEnemyPaintDecal::SpawnPaintDecal(UWorld* World, const FVector& Location, const FRotator& Rotator)
 {
 	if (!World) return;
 
 	FActorSpawnParameters SpawnParms;
-	APaintDecal* NewDecal = World->SpawnActor<APaintDecal>(APaintDecal::StaticClass(), Location, Rotator, SpawnParms);
+	AEnemyPaintDecal* NewDecal = World->SpawnActor<AEnemyPaintDecal>(AEnemyPaintDecal::StaticClass(), Location, Rotator, SpawnParms);
 }
+
+

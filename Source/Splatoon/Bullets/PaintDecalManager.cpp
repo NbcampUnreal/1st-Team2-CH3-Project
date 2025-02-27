@@ -12,13 +12,13 @@ UPaintDecalManager* UPaintDecalManager::GetInstance(UWorld* World)
 	return GameInstance->GetSubsystem<UPaintDecalManager>();
 }
 
-void UPaintDecalManager::AddDecalList(APaintDecal* NewDecal)
+void UPaintDecalManager::AddDecalList(AActor* NewDecal)
 {
 	if (!NewDecal) return;
 
 	DecalList.Add(NewDecal);
 
-	DecalList.RemoveAll([](const TWeakObjectPtr<APaintDecal>& Decal)
+	DecalList.RemoveAll([](const TWeakObjectPtr<AActor>& Decal)
 		{
 			return !Decal.IsValid();
 		});

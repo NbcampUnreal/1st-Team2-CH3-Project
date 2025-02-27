@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -11,14 +12,14 @@ UCLASS()
 class SPLATOON_API UPaintDecalManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
-	
+
 public:
 	static UPaintDecalManager* GetInstance(UWorld* World);
-	void AddDecalList(APaintDecal* NewDecal);
+	void AddDecalList(AActor* NewDecal);
 
 private:
 	UPROPERTY()
-	TArray<TWeakObjectPtr<APaintDecal>> DecalList;
+	TArray<TWeakObjectPtr<AActor>> DecalList;
 	UPROPERTY(EditDefaultsOnly)
-	int32 MaxDecal = 50;
+	int32 MaxDecal = 100;
 };
