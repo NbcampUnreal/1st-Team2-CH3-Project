@@ -41,13 +41,16 @@ void ABaseGun::ReloadStart()
 {
 	if (UWorld* World = GetWorld())
 	{
-		World->GetTimerManager().SetTimer(
-			ReloadTimerHandle,
-			this,
-			&ABaseGun::Reload,
-			ReloadBulletInterval,
-			true
-		);
+		if (!World->GetTimerManager().IsTimerActive(ReloadTimerHandle))
+		{
+			World->GetTimerManager().SetTimer(
+				ReloadTimerHandle,
+				this,
+				&ABaseGun::Reload,
+				ReloadBulletInterval,
+				true
+			);
+		}
 	}
 }
 
@@ -95,7 +98,7 @@ bool ABaseGun::Fire()
 
 bool ABaseGun::CanReload() const
 {
-	return RemainingBullets >= MaxRemainingBullets;
+	return RemainingBullets < MaxRemainingBullets;
 }
 
 int32 ABaseGun::GetRemainingBullets() const

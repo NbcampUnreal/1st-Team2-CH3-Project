@@ -12,18 +12,19 @@ UCLASS()
 class SPLATOON_API APaintDecal : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	APaintDecal();
 
 public:
 	static void SpawnPaintDecal(UWorld* World, const FVector& Location, const FRotator& Rotator);
 
-protected:
-	UPROPERTY(VisibleAnywhere, Category = "Bullet|Paint")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet|Paint")
 	UDecalComponent* DecalComp;
-	UPROPERTY(EditDefaultsOnly, Category = "Bullet|Paint")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet|Paint")
 	UMaterialInterface* DecalMaterial;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet|Paint")
+	FString DecalPath;
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet|Paint")
 	FVector DecalSize;
 

@@ -6,8 +6,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Splatoon/Guns/Magazine/LiquidTank.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 ASplatoonCharacter::ASplatoonCharacter()
 {
@@ -55,6 +58,10 @@ ASplatoonCharacter::ASplatoonCharacter()
 	SpeedUp = 1.5f;
 	SpeedDown = 0.3f;
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
+
+	// HP
+	MaxHealth = 3;
+	Health = MaxHealth;
 }
 
 void ASplatoonCharacter::BeginPlay()
@@ -96,6 +103,13 @@ void ASplatoonCharacter::BeginPlay()
 
 	// Excluding collision
 	QueryParams.AddIgnoredActor(this);
+
+	// Effect
+	if (HitEffectWidgetClass)
+	{
+		HitEffectWidget = CreateWidget<UUserWidget>(GetWorld(), HitEffectWidgetClass);
+	}
+	
 }
 
 void ASplatoonCharacter::Tick(float DeltaTime)
@@ -278,6 +292,8 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 			NiagaraPaintComponent->Deactivate();
 		}
 
+		Gun->ReloadStop();
+
 		UnCrouch();
 	}
 }
@@ -321,6 +337,8 @@ void ASplatoonCharacter::UpdatePaintCheck()
 			TransformMeshComp->SetVisibility(false);
 			TransformMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
+
+		Gun->ReloadStart();
 	}
 	else
 	{
@@ -332,10 +350,74 @@ void ASplatoonCharacter::UpdatePaintCheck()
 		{
 			NiagaraPaintComponent->Deactivate();
 		}
+
+		Gun->ReloadStop();
 	}
 }
 
 void ASplatoonCharacter::Attack()
 {
 	Gun->Fire();
+}
+
+float ASplatoonCharacter::TakeDamage(
+	float DamageAmount, 
+	struct FDamageEvent const& DamageEvent, 
+	AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Hit")));
+	Health--;
+
+	if (Health <= 0.0f)
+	{
+		OnDeath();
+		return DamageAmount;
+	}
+
+	FVector PlayerLocation = GetActorLocation();
+	FVector AttackerLocation = DamageCauser->GetActorLocation();
+
+	FVector KnockbackDirection = (PlayerLocation - AttackerLocation).GetSafeNormal();
+
+	float KnockbackStrength = 500.0f;
+	FVector Knockback = KnockbackDirection * KnockbackStrength;
+
+	LaunchCharacter(Knockback, true, true);
+	
+	if (HitEffectWidget)
+	{
+		HitEffectWidget->RemoveFromParent();
+		HitEffectWidget->AddToViewport();
+	}
+
+	return DamageAmount;
+}
+
+void ASplatoonCharacter::OnDeath()
+{
+	AController* PlayerController = GetController();
+	if (PlayerController)
+	{
+		PlayerController->DisableInput(Cast<ASplatoonPlayerController>(PlayerController));
+		bUseControllerRotationYaw = false;
+	}
+}
+
+void ASplatoonCharacter::OnDropDeath()
+{
+	if (!CameraComp) return;
+	ASplatoonPlayerController* NewPlayerController = Cast<ASplatoonPlayerController>(GetController());
+
+	AActor* DeathCamera = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), GetActorLocation() + FVector(0, 0, 300), FRotator(-90, 0, 0));
+
+	NewPlayerController->SetViewTargetWithBlend(DeathCamera, 3.0f);
+
+	GetWorldTimerManager().SetTimer(
+		DropTimerHandle,
+		this,
+		&ASplatoonCharacter::OnDeath,
+		1.0f,
+		false
+	);
 }

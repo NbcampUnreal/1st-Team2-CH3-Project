@@ -13,6 +13,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class ULiquidTank;
+class UUserWidget;
 struct FInputActionValue;
 
 UCLASS()
@@ -30,6 +31,12 @@ protected:
 	float Speed;
 	float SpeedUp;
 	float SpeedDown;
+
+	// HP
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	int32 MaxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	int32 Health;
 
 	// Character form
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Transform")
@@ -66,6 +73,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	UNiagaraComponent* NiagaraPaintComponent;
 
+	// Effect
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> HitEffectWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* HitEffectWidget;
+
 
 public:	
 	virtual void Tick(float DeltaTime) override;
@@ -89,6 +103,24 @@ public:
 	// Gun
 	UPROPERTY(EditDefaultsOnly, Category = "Gun")
 	TSubclassOf<ABaseGun> GunClass;
+
+	// Damage
+	// UFUNCTION(blueprintCallable)
+	// void TakeDamage(AActor* DamageCauser);
+
+	UFUNCTION(BlueprintCallable, Category = "Damage")
+	virtual float TakeDamage(
+		float DamageAmount, 
+		struct FDamageEvent const& DamageEvent, 
+		AController* EventInstigator, 
+		AActor* DamageCauser) override;
+
+	// Death
+	UFUNCTION()
+	void OnDeath();
+	UFUNCTION()
+	void OnDropDeath();
+	FTimerHandle DropTimerHandle;
 
 	// Input Function
 	UFUNCTION()
