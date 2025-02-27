@@ -22,6 +22,11 @@ APaintDecal::APaintDecal()
 	//DecalComp->SetupAttachment(CollisionBox);
 	CollisionBox->SetupAttachment(DecalComp);
 
+	// DecalMaterial = CreateDefaultSubobject<UMaterial>(TEXT("DecalMaterial"));
+	// UMaterialInterface* DMaterial = Cast<UMaterialInterface>(StaticLoadObject(UObject::StaticClass(), nullptr, *DecalPath));
+
+	// /Game/Resources/Materials/M_PaintDecal.M_PaintDecal
+	
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> PaintDecalMaterial(TEXT("/Game/Resources/Materials/M_PaintDecal.M_PaintDecal"));
 	if (PaintDecalMaterial.Succeeded())
 	{
@@ -56,5 +61,3 @@ void APaintDecal::SpawnPaintDecal(UWorld* World, const FVector& Location, const 
 	FActorSpawnParameters SpawnParms;
 	APaintDecal* NewDecal = World->SpawnActor<APaintDecal>(APaintDecal::StaticClass(), Location, Rotator, SpawnParms);
 }
-
-
