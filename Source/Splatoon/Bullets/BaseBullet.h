@@ -14,16 +14,16 @@ class SPLATOON_API ABaseBullet : public AActor
 
 public:
 	ABaseBullet();
-
+	UFUNCTION(BlueprintImplementableEvent, Category = "Collision")
+	void OnHitEvent(AActor* OtherActor);
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, Category = "Bullet|Component")
 	UStaticMeshComponent* BulletMeshComp;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
 	virtual void OnBulletDestroyed();
 
 	/* Control */
