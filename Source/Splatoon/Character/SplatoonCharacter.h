@@ -105,7 +105,9 @@ public:
 	TSubclassOf<ABaseGun> GunClass;
 
 	// Damage
-	void TakeDamage(AActor* DamageCauser);
+	UFUNCTION(BlueprintCallable, Category = "Damage")
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser) override;
 
 	// Death
 	UFUNCTION()

@@ -360,7 +360,7 @@ void ASplatoonCharacter::Attack()
 	Gun->Fire();
 }
 
-void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
+float ASplatoonCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Health--;
 
@@ -385,6 +385,8 @@ void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
 		HitEffectWidget->RemoveFromParent();
 		HitEffectWidget->AddToViewport();
 	}
+
+	return DamageAmount;
 }
 
 void ASplatoonCharacter::OnDeath()
