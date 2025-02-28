@@ -3,6 +3,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Splatoon/Bullets/BaseBullet.h"
 #include "Splatoon/Character/SplatoonCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 ABaseGun::ABaseGun()
 {
@@ -76,7 +77,10 @@ bool ABaseGun::Fire()
 	// 2. 탄환 감소
 	AddRemainingBullets(-1);
 
-	// 3. 탄환 생성
+	// 3. 소리 출력
+	UGameplayStatics::PlaySound2D(GetWorld(), FireSound, 1.0f, 1.0f, 0.0f);
+
+	// 4. 탄환 생성
 	if (APlayerController* Controller = GetWorld()->GetFirstPlayerController())
 	{
 		FActorSpawnParameters SpawnParams;

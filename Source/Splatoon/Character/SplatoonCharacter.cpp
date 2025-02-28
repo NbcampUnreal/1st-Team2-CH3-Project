@@ -10,6 +10,8 @@
 #include "Splatoon/Guns/Magazine/LiquidTank.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialParameterCollectionInstance.h"
 
 
 ASplatoonCharacter::ASplatoonCharacter()
@@ -60,8 +62,9 @@ ASplatoonCharacter::ASplatoonCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 
 	// HP
-	MaxHealth = 3;
+	MaxHealth = 5;
 	Health = MaxHealth;
+
 }
 
 void ASplatoonCharacter::BeginPlay()
@@ -107,9 +110,38 @@ void ASplatoonCharacter::BeginPlay()
 	// Effect
 	if (HitEffectWidgetClass)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::Printf(TEXT("Widget")));
 		HitEffectWidget = CreateWidget<UUserWidget>(GetWorld(), HitEffectWidgetClass);
+		HitEffectWidget->AddToViewport();
 	}
-	
+
+	// Character Health Check
+	if (Health < MaxHealth) {
+		StartRecoverHealth();
+	}
+}
+
+void ASplatoonCharacter::StartRecoverHealth()
+{
+	GetWorldTimerManager().SetTimer(
+		RecoverHealthHandle,
+		this,
+		&ASplatoonCharacter::HealthUp,
+		1.0f,
+		true,
+		0.0f
+	);
+}
+
+void ASplatoonCharacter::HealthUp()
+{
+	if (Health < MaxHealth) {
+		Health++;
+
+		if (Health == MaxHealth) {
+			GetWorldTimerManager().ClearTimer(RecoverHealthHandle);
+		}
+	}
 }
 
 void ASplatoonCharacter::Tick(float DeltaTime)
@@ -225,7 +257,6 @@ void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 	{
 		if (Gun->GetRemainingBullets() <= 0) return;
 
-		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 		GetWorldTimerManager().SetTimer(
 			FireTimerHandle,
 			this,
@@ -237,7 +268,6 @@ void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 		
 		bIsFire = true;
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire")));
-
 	}
 }
 void ASplatoonCharacter::StopFire(const FInputActionValue& value)
@@ -357,7 +387,8 @@ void ASplatoonCharacter::UpdatePaintCheck()
 
 void ASplatoonCharacter::Attack()
 {
-	Gun->Fire();
+	if(Gun->CanFire())
+		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 }
 
 void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
@@ -379,12 +410,34 @@ void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
 	FVector Knockback = KnockbackDirection * KnockbackStrength;
 
 	LaunchCharacter(Knockback, true, true);
-	
+
+	// Check Recover Timer
+	if (GetWorldTimerManager().IsTimerActive(DamageResetHandle))
+	{
+		GetWorldTimerManager().ClearTimer(DamageResetHandle);
+	}
+
+	// Start Recover Timer
+	GetWorldTimerManager().SetTimer(
+		DamageResetHandle,
+		this,
+		&ASplatoonCharacter::StartRecoverHealth,
+		5.0f,
+		false,
+		0.0f
+	);
+
+	/*
 	if (HitEffectWidget)
 	{
 		HitEffectWidget->RemoveFromParent();
 		HitEffectWidget->AddToViewport();
-	}
+	}*/
+}
+
+float ASplatoonCharacter::fHealthPercent()
+{
+	return Health / MaxHealth;
 }
 
 void ASplatoonCharacter::OnDeath()
