@@ -12,11 +12,7 @@ void UPlayerShootNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceB
 		ASplatoonCharacter* PlayerCharacter = Cast<ASplatoonCharacter>(ActorCheck);
 
 		if (PlayerCharacter) {
-			GunActor = Cast<ABaseGun>(PlayerCharacter->GunClass);
-
-			if (GunActor) {
-				GunActor->Fire();
-			}
+			PlayerCharacter->Gun->Fire();
 		}
 	}
 }
