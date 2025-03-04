@@ -39,7 +39,9 @@ public:
 	TSubclassOf<UUserWidget> HUDWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	UUserWidget* HUDWidgetInstance;
-
+	UFUNCTION(BlueprintCallable, Category = "HUD")
+	void ShowHUD();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Main")
 	TSubclassOf<UUserWidget> MainWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Main")

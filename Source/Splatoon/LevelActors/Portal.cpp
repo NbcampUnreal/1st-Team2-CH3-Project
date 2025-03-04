@@ -39,13 +39,17 @@ void APortal::ActivePortal()
 	}
 }
 
+void APortal::OpenLevel()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), NextLevelName);
+}
+
 void APortal::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
 	ASplatoonCharacter* Player = Cast<ASplatoonCharacter>(OtherActor);
 	if (Player)
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), LevelMapNames[CurrentLevelIndex + 1]);
+		PlayWidgetAnimation();
 	}
 }
 
