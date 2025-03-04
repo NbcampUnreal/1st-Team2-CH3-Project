@@ -13,7 +13,10 @@ UCLASS()
 class SPLATOON_API ASplatoonGameState : public AGameState
 {
 	GENERATED_BODY()
-
+public:
+	UFUNCTION(BlueprintCallable, Category = "Level")
+	void OnGameOver();
+	
 protected:
 	virtual void BeginPlay() override;
 	

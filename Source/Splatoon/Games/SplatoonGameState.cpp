@@ -31,3 +31,15 @@ void ASplatoonGameState::StartLevel()
 		}
 	}
 }
+
+void ASplatoonGameState::OnGameOver()
+{
+	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
+	{
+		if (ASplatoonPlayerController* SplatoonPlayerController = Cast<ASplatoonPlayerController>(PlayerController))
+		{
+			SplatoonPlayerController->ShowGameOver();
+			SplatoonPlayerController->SetPause(true);
+		}
+	}
+}
