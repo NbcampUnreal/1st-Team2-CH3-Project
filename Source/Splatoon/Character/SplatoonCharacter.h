@@ -38,10 +38,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	int32 Health;
 
-	// Character form
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Transform")
-	bool bIsTransformed;
-
 	//Paint
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Paint")
 	bool bIsPaint;
@@ -55,7 +51,6 @@ protected:
 
 	// Gun
 	FTimerHandle FireTimerHandle;
-	ABaseGun* Gun;
 	bool bIsFire;
 	void Attack();
 
@@ -79,7 +74,12 @@ protected:
 
 	UPROPERTY()
 	UUserWidget* HitEffectWidget;
-
+	
+	// Damage
+	FTimerHandle DamageResetHandle;
+	FTimerHandle RecoverHealthHandle;
+	void StartRecoverHealth();
+	void HealthUp();
 
 public:	
 	virtual void Tick(float DeltaTime) override;
@@ -100,20 +100,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* AttackMontage;
 
+	// Character form
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Transform")
+	bool bIsTransformed;
+
 	// Gun
 	UPROPERTY(EditDefaultsOnly, Category = "Gun")
 	TSubclassOf<ABaseGun> GunClass;
+	ABaseGun* Gun;
 
 	// Damage
-	// UFUNCTION(blueprintCallable)
-	// void TakeDamage(AActor* DamageCauser);
-
 	UFUNCTION(BlueprintCallable, Category = "Damage")
 	virtual float TakeDamage(
 		float DamageAmount, 
 		struct FDamageEvent const& DamageEvent, 
 		AController* EventInstigator, 
 		AActor* DamageCauser) override;
+	UFUNCTION(BlueprintCallable, Category = "Damage")
+	float fHealthPercent();
+
 
 	// Death
 	UFUNCTION()

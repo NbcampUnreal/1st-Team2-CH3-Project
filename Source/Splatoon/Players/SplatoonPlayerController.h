@@ -34,4 +34,20 @@ public:
 	UInputAction* FireAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* TransforAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<UUserWidget> HUDWidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	UUserWidget* HUDWidgetInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Main")
+	TSubclassOf<UUserWidget> MainWidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Main")
+	UUserWidget* MainWidgetInatance;
+
+	UFUNCTION(BlueprintCallable, Category = "Main")
+	void ShowMainMenu();
+	UFUNCTION(BlueprintCallable, Category = "Main")
+	void StartGame();
+
 };

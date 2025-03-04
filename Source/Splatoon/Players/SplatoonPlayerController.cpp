@@ -3,6 +3,8 @@
 
 #include "SplatoonPlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 ASplatoonPlayerController::ASplatoonPlayerController() :
 	InputMappingContext(nullptr),
@@ -11,6 +13,34 @@ ASplatoonPlayerController::ASplatoonPlayerController() :
 	LookAction(nullptr),
 	FireAction(nullptr),
 	TransforAction(nullptr)
+{
+
+}
+
+void ASplatoonPlayerController::ShowMainMenu()
+{
+	if (HUDWidgetInstance) {
+		HUDWidgetInstance->RemoveFromParent();
+		HUDWidgetInstance = nullptr;
+	}
+
+	if (MainWidgetInatance) {
+		MainWidgetInatance->RemoveFromParent();
+		MainWidgetInatance = nullptr;
+	}
+
+	if (MainWidgetClass) {
+		MainWidgetInatance = CreateWidget<UUserWidget>(this, MainWidgetClass);
+		if (MainWidgetInatance) {
+			MainWidgetInatance->AddToViewport();
+
+			bShowMouseCursor = true;
+			SetInputMode(FInputModeUIOnly());
+		}
+	}
+}
+
+void ASplatoonPlayerController::StartGame()
 {
 
 }
@@ -29,4 +59,7 @@ void ASplatoonPlayerController::BeginPlay()
 			}
 		}
 	}
+
+	// 만약 레벨이 Main인 경우 MainMenu UI 출력
+	FString CurrentMapName = GetWorld()->GetMapName();
 }
