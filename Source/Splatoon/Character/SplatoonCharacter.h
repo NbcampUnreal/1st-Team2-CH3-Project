@@ -107,6 +107,7 @@ public:
 	// Gun
 	UPROPERTY(EditDefaultsOnly, Category = "Gun")
 	TSubclassOf<ABaseGun> GunClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun")
 	ABaseGun* Gun;
 
 	// Damage
@@ -137,4 +138,6 @@ public:
 	UFUNCTION()
 	void Transfor(const FInputActionValue& value);
 
+	UFUNCTION()
+	bool GetIsTransformed();
 };

@@ -1,5 +1,6 @@
 #include "SplatoonGameMode.h"
 #include "Splatoon/LevelActors/Balloon.h"
+#include "Splatoon/LevelActors/Portal.h"
 #include "Kismet/GameplayStatics.h"
 
 void ASplatoonGameMode::BeginPlay()
@@ -19,10 +20,8 @@ void ASplatoonGameMode::DecreaseBalloonCount()
     {
         BalloonCount--;
     }
-    else if (BalloonCount == 0)
-    {
-        SpawnPortal();
-    }
+
+    SpawnPortal();
 }
 
 void ASplatoonGameMode::IncreaseGameScore(int32 Score)
@@ -32,5 +31,12 @@ void ASplatoonGameMode::IncreaseGameScore(int32 Score)
 
 void ASplatoonGameMode::SpawnPortal()
 {
-    // Æ÷Å» »ý¼º
+    APortal* Portal = Cast<APortal>(UGameplayStatics::GetActorOfClass(GetWorld(), APortal::StaticClass()));
+
+    if (!Portal) return;
+
+    if (BalloonCount==0)
+    {
+        Portal->ActivePortal();
+    }
 }

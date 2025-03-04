@@ -328,6 +328,11 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 	}
 }
 
+bool ASplatoonCharacter::GetIsTransformed()
+{
+	return bIsTransformed;
+}
+
 void ASplatoonCharacter::CheckPaint()
 {
 	FVector Start = GetActorLocation();
