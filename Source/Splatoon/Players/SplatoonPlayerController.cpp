@@ -29,6 +29,12 @@ void ASplatoonPlayerController::ShowMainMenu()
 		MainWidgetInatance = nullptr;
 	}
 
+	if (GameOverWidgetInstance)
+	{
+		GameOverWidgetInstance->RemoveFromParent();
+		GameOverWidgetInstance = nullptr;
+	}
+
 	if (MainWidgetClass) {
 		MainWidgetInatance = CreateWidget<UUserWidget>(this, MainWidgetClass);
 		if (MainWidgetInatance) {
@@ -36,6 +42,36 @@ void ASplatoonPlayerController::ShowMainMenu()
 
 			bShowMouseCursor = true;
 			SetInputMode(FInputModeUIOnly());
+		}
+	}
+}
+
+void ASplatoonPlayerController::ShowGameOver()
+{
+	if (HUDWidgetInstance) {
+		HUDWidgetInstance->RemoveFromParent();
+		HUDWidgetInstance = nullptr;
+	}
+
+	if (MainWidgetInatance) {
+		MainWidgetInatance->RemoveFromParent();
+		MainWidgetInatance = nullptr;
+	}
+
+	if (GameOverWidgetInstance)
+	{
+		GameOverWidgetInstance->RemoveFromParent();
+		GameOverWidgetInstance = nullptr;
+	}
+
+	if (GameOverWidgetClass)
+	{
+		GameOverWidgetInstance = CreateWidget<UUserWidget>(this, GameOverWidgetClass);
+		if (GameOverWidgetInstance)
+		{
+			GameOverWidgetInstance->AddToViewport();
+			SetInputMode(FInputModeUIOnly());
+			bShowMouseCursor = true;
 		}
 	}
 }

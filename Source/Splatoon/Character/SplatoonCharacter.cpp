@@ -5,10 +5,12 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/CameraActor.h"
 #include "EnhancedInputComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Splatoon/Guns/Magazine/LiquidTank.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
+#include "Splatoon/Games/SplatoonGameState.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
@@ -442,28 +444,29 @@ float ASplatoonCharacter::fHealthPercent()
 
 void ASplatoonCharacter::OnDeath()
 {
-	AController* PlayerController = GetController();
-	if (PlayerController)
+	ASplatoonGameState* SplatoonGameState = GetWorld() ? GetWorld()->GetGameState<ASplatoonGameState>() : nullptr;
+	if (SplatoonGameState)
 	{
-		PlayerController->DisableInput(Cast<ASplatoonPlayerController>(PlayerController));
-		bUseControllerRotationYaw = false;
+		SplatoonGameState->OnGameOver();
 	}
 }
 
 void ASplatoonCharacter::OnDropDeath()
 {
 	if (!CameraComp) return;
-	ASplatoonPlayerController* NewPlayerController = Cast<ASplatoonPlayerController>(GetController());
 
-	AActor* DeathCamera = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), GetActorLocation() + FVector(0, 0, 300), FRotator(-90, 0, 0));
+	ASplatoonPlayerController* PlayerController = Cast<ASplatoonPlayerController>(GetController());
+	FRotator Rotator = GetActorRotation() + FRotator(-90, 0, 0);
 
-	NewPlayerController->SetViewTargetWithBlend(DeathCamera, 3.0f);
+	ACameraActor* DeathCamera = GetWorld()->SpawnActor<ACameraActor>(ACameraActor::StaticClass(), GetActorLocation() + FVector(0, 0, 300), Rotator);
+
+	PlayerController->SetViewTargetWithBlend(DeathCamera, 3.0f);
 
 	GetWorldTimerManager().SetTimer(
 		DropTimerHandle,
 		this,
 		&ASplatoonCharacter::OnDeath,
-		1.0f,
+		3.0f,
 		false
 	);
 }
