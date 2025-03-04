@@ -45,9 +45,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Main")
 	UUserWidget* MainWidgetInatance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu")
+	TSubclassOf<UUserWidget> GameOverWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Menu")
+	UUserWidget* GameOverWidgetInstance;
+
+
 	UFUNCTION(BlueprintCallable, Category = "Main")
 	void ShowMainMenu();
 	UFUNCTION(BlueprintCallable, Category = "Main")
 	void StartGame();
+	UFUNCTION(BlueprintCallable, Category = "Main")
+	void ShowGameOver();
+
 
 };
