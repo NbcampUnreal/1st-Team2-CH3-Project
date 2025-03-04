@@ -14,4 +14,12 @@ class SPLATOON_API USplatoonGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+public:
+	USplatoonGameInstance();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "GameData")
+	int32 GameSocre;
+
+	UFUNCTION()
+	void AddToScore(int32 Amount);
 };
