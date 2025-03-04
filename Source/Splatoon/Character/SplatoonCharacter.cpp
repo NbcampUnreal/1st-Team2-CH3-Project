@@ -10,8 +10,11 @@
 #include "Splatoon/Guns/Magazine/LiquidTank.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/DamageEvents.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
+
 
 
 ASplatoonCharacter::ASplatoonCharacter()
@@ -396,14 +399,20 @@ void ASplatoonCharacter::Attack()
 		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 }
 
-void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
+float ASplatoonCharacter::TakeDamage(
+	float DamageAmount, 
+	struct FDamageEvent const& DamageEvent, 
+	AController* EventInstigator,
+	AActor* DamageCauser)
 {
+	float SDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Hit")));
 	Health--;
 
 	if (Health <= 0)
 	{
 		OnDeath();
-		return;
+		return SDamage;
 	}
 
 	FVector PlayerLocation = GetActorLocation();
@@ -432,12 +441,8 @@ void ASplatoonCharacter::TakeDamage(AActor* DamageCauser)
 		0.0f
 	);
 
-	/*
-	if (HitEffectWidget)
-	{
-		HitEffectWidget->RemoveFromParent();
-		HitEffectWidget->AddToViewport();
-	}*/
+
+	return SDamage;
 }
 
 float ASplatoonCharacter::fHealthPercent()

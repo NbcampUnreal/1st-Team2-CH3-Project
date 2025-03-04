@@ -111,9 +111,15 @@ public:
 	ABaseGun* Gun;
 
 	// Damage
-	void TakeDamage(AActor* DamageCauser);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Damage")
+	virtual float TakeDamage(
+		float DamageAmount, 
+		struct FDamageEvent const& DamageEvent, 
+		AController* EventInstigator, 
+		AActor* DamageCauser) override;
+	UFUNCTION(BlueprintCallable, Category = "Damage")
 	float fHealthPercent();
+
 
 	// Death
 	UFUNCTION()

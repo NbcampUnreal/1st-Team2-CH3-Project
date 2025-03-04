@@ -41,8 +41,12 @@ void ABaseBullet::BeginPlay()
 
 void ABaseBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	OnHitEvent(OtherActor);
 	// 목표 대상이 플레이어인 경우 
-	if (OtherActor == GetInstigator()) return;
+	if (OtherActor == GetInstigator())
+	{
+		return;
+	}
 
 	// Bullet이 Character나 Pawn에 충돌 시 데칼 생성 X
 	if (OtherActor && (OtherActor->IsA(ACharacter::StaticClass()) || OtherActor->IsA(APawn::StaticClass())))
