@@ -56,11 +56,6 @@ void ABalloon::OnOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor
 
     if (CurrentHealth <= 0)
     {
-        /*SetActorHiddenInGame(true);
-        SetActorEnableCollision(false);
-
-        FTimerHandle DestroyTimer;
-        GetWorldTimerManager().SetTimer(DestroyTimer, this, &ABalloon::DestroyBalloon, 0.5f, false);*/
         DestroyBalloon();
     }
 }
