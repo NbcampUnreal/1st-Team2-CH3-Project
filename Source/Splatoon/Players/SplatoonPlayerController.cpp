@@ -17,6 +17,26 @@ ASplatoonPlayerController::ASplatoonPlayerController() :
 
 }
 
+void ASplatoonPlayerController::ShowHUD()
+{
+	if (HUDWidgetInstance) {
+		HUDWidgetInstance->RemoveFromParent();
+		HUDWidgetInstance = nullptr;
+	}
+
+	if (MainWidgetInatance) {
+		MainWidgetInatance->RemoveFromParent();
+		MainWidgetInatance = nullptr;
+	}
+
+	if (HUDWidgetClass) {
+		HUDWidgetInstance = CreateWidget<UUserWidget>(this, HUDWidgetClass);
+		if (HUDWidgetInstance) {
+			HUDWidgetInstance->AddToViewport();
+		}
+	}
+}
+
 void ASplatoonPlayerController::ShowMainMenu()
 {
 	if (HUDWidgetInstance) {
@@ -60,6 +80,6 @@ void ASplatoonPlayerController::BeginPlay()
 		}
 	}
 
-	// ¸¸¾à ·¹º§ÀÌ MainÀÎ °æ¿ì MainMenu UI Ãâ·Â
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Mainï¿½ï¿½ ï¿½ï¿½ï¿½ MainMenu UI ï¿½ï¿½ï¿½
 	FString CurrentMapName = GetWorld()->GetMapName();
 }

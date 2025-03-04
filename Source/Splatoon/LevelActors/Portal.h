@@ -23,8 +23,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
 	TArray<FName> LevelMapNames;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level")
+	FName NextLevelName;
+	
 	void ActivePortal();
 
+	UFUNCTION(BlueprintCallable)
+	void OpenLevel();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayWidgetAnimation();
+	
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Portal")
 	UBoxComponent* PortalCollisionComp;
