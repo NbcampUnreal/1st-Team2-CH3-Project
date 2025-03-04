@@ -14,6 +14,8 @@
 #include "Engine/DamageEvents.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
+#include "Camera/CameraActor.h"
+#include "Splatoon/Games/SplatoonGameState.h"
 
 
 
@@ -408,6 +410,7 @@ float ASplatoonCharacter::TakeDamage(
 	float SDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Hit")));
 	Health--;
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("%d"), Health));
 
 	if (Health <= 0)
 	{
@@ -452,28 +455,30 @@ float ASplatoonCharacter::fHealthPercent()
 
 void ASplatoonCharacter::OnDeath()
 {
-	AController* PlayerController = GetController();
-	if (PlayerController)
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Death")));
+	ASplatoonGameState* SplatoonGameState = GetWorld() ? GetWorld()->GetGameState<ASplatoonGameState>() : nullptr;
+	if (SplatoonGameState)
 	{
-		PlayerController->DisableInput(Cast<ASplatoonPlayerController>(PlayerController));
-		bUseControllerRotationYaw = false;
+		SplatoonGameState->OnGameOver();
 	}
 }
 
 void ASplatoonCharacter::OnDropDeath()
 {
 	if (!CameraComp) return;
-	ASplatoonPlayerController* NewPlayerController = Cast<ASplatoonPlayerController>(GetController());
 
-	AActor* DeathCamera = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), GetActorLocation() + FVector(0, 0, 300), FRotator(-90, 0, 0));
+	ASplatoonPlayerController* PlayerController = Cast<ASplatoonPlayerController>(GetController());
+	FRotator Rotator = GetActorRotation() + FRotator(-90, 0, 0);
 
-	NewPlayerController->SetViewTargetWithBlend(DeathCamera, 3.0f);
+	ACameraActor* DeathCamera = GetWorld()->SpawnActor<ACameraActor>(ACameraActor::StaticClass(), GetActorLocation() + FVector(0, 0, 300), Rotator);
+
+	PlayerController->SetViewTargetWithBlend(DeathCamera, 3.0f);
 
 	GetWorldTimerManager().SetTimer(
 		DropTimerHandle,
 		this,
 		&ASplatoonCharacter::OnDeath,
-		1.0f,
+		3.0f,
 		false
 	);
 }
