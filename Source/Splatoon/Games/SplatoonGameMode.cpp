@@ -2,6 +2,7 @@
 #include "Splatoon/LevelActors/Balloon.h"
 #include "Splatoon/LevelActors/Portal.h"
 #include "Kismet/GameplayStatics.h"
+#include "SplatoonGameInstance.h"
 
 void ASplatoonGameMode::BeginPlay()
 {
@@ -26,7 +27,14 @@ void ASplatoonGameMode::DecreaseBalloonCount()
 
 void ASplatoonGameMode::IncreaseGameScore(int32 Score)
 {
-    GameScore += Score;
+    if (UGameInstance* GameInstance = GetGameInstance()) {
+        USplatoonGameInstance* SplatoonGameInstance = Cast<USplatoonGameInstance>(GameInstance);
+        if (SplatoonGameInstance) {
+            SplatoonGameInstance->AddToScore(Score);
+        }
+    }
+
+    //GameScore += Score;
 }
 
 void ASplatoonGameMode::SpawnPortal()

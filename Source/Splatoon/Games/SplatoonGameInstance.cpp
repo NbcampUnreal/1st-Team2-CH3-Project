@@ -3,3 +3,14 @@
 
 #include "SplatoonGameInstance.h"
 
+USplatoonGameInstance::USplatoonGameInstance()
+{
+	GameSocre = 0;
+}
+
+void USplatoonGameInstance::AddToScore(int32 Amount)
+{
+	GameSocre += Amount;
+}
+
+
