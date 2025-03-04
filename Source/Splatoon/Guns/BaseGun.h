@@ -30,6 +30,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gun")
 	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun|Sound")
+	USoundBase* FireSound;
 	
 	virtual void BeginPlay() override;
 	
