@@ -11,13 +11,15 @@ class SPLATOON_API ASplatoonGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Balloon")
+	int32 BalloonCount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Balloon")
+	int32 MaxBalloonCount;
+
 	virtual void BeginPlay() override;
 	void DecreaseBalloonCount();
 	void IncreaseGameScore(int32 Score);
-
+	
 private:
-	int32 BalloonCount = 0;
-	int32 GameScore = 0;
-
 	void SpawnPortal();
 };

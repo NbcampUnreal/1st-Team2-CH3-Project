@@ -13,6 +13,7 @@ void ASplatoonGameMode::BeginPlay()
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABalloon::StaticClass(), BalloonActors);
 
     BalloonCount = BalloonActors.Num();
+    MaxBalloonCount = BalloonCount;
 }
 
 void ASplatoonGameMode::DecreaseBalloonCount()
@@ -33,7 +34,6 @@ void ASplatoonGameMode::IncreaseGameScore(int32 Score)
             SplatoonGameInstance->AddToScore(Score);
         }
     }
-
     //GameScore += Score;
 }
 

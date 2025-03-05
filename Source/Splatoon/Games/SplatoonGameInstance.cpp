@@ -5,12 +5,13 @@
 
 USplatoonGameInstance::USplatoonGameInstance()
 {
-	GameSocre = 0;
+	GameScore = 0;
 }
 
 void USplatoonGameInstance::AddToScore(int32 Amount)
 {
-	GameSocre += Amount;
+	GameScore += Amount;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Score: %d"), GameScore));
 }
 
 

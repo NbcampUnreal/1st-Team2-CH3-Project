@@ -18,7 +18,7 @@ public:
 	USplatoonGameInstance();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "GameData")
-	int32 GameSocre;
+	int32 GameScore;
 
 	UFUNCTION()
 	void AddToScore(int32 Amount);
