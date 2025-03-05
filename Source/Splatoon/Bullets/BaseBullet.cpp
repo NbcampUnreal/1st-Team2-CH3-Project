@@ -20,7 +20,7 @@ ABaseBullet::ABaseBullet()
 
 	// Control
 	Speed = 2500.f;
-	TargetDistance = 2500.f;
+	TargetDistance = 1500.f;
 }
 
 void ABaseBullet::BeginPlay()
@@ -32,10 +32,22 @@ void ABaseBullet::BeginPlay()
 	{
 		FVector CameraLocation;
 		FRotator CameraRotation;
-		GetInstigator()->GetActorEyesViewPoint(CameraLocation, CameraRotation);
-		FVector TraceStart = CameraLocation;
-		FVector TraceEnd = TraceStart + (CameraRotation.Vector() * TargetDistance);
-		TargetDirection = (TraceEnd - GetActorLocation()).GetSafeNormal();;
+		APlayerController* PlayerController = Cast<APlayerController>(GetInstigator()->GetController());
+		if (PlayerController) /* 플레이어 총알 방향 설정 */
+		{
+			PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
+			FVector TraceStart = CameraLocation;
+			FVector TraceEnd = TraceStart + (CameraRotation.Vector() * TargetDistance);
+			TraceEnd = FVector(TraceEnd.X + TargetOffset.X, TraceEnd.Y + TargetOffset.Y, TraceEnd.Z + TargetOffset.Z);
+			TargetDirection = (TraceEnd - GetActorLocation()).GetSafeNormal();
+		}
+		else /* 몬스터 총알 방향 설정 */
+		{
+			GetInstigator()->GetActorEyesViewPoint(CameraLocation, CameraRotation);
+			FVector TraceStart = CameraLocation;
+			FVector TraceEnd = TraceStart + (CameraRotation.Vector() * TargetDistance);
+			TargetDirection = (TraceEnd - GetActorLocation()).GetSafeNormal();
+		}
 	}
 }
 

@@ -34,5 +34,8 @@ protected:
 	float TargetDistance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet | Control")
+	FVector TargetOffset;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet | Control")
 	float Speed;
 };
