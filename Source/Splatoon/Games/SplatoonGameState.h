@@ -18,10 +18,9 @@ public:
 	void OnGameOver();
 	
 protected:
-	virtual void BeginPlay() override;
-	
-	void StartLevel();
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level")
 	FName MainLevel;
+
+	virtual void BeginPlay() override;
+	void StartLevel();
 };

@@ -1,8 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SplatoonGameState.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
+#include "Components/TextBlock.h"
+#include "Blueprint/UserWidget.h"
 
 void ASplatoonGameState::BeginPlay()
 {
@@ -20,7 +19,7 @@ void ASplatoonGameState::StartLevel()
 		if (SplatoonPlayerController)
 		{
 			FString CurrentLevelName = GetWorld()->GetMapName();
-			if (CurrentLevelName.Contains( MainLevel.ToString()))
+			if (CurrentLevelName.Contains(MainLevel.ToString()))
 			{
 				SplatoonPlayerController->ShowMainMenu();
 			}
