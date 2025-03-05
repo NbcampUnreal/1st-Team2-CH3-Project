@@ -20,6 +20,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "GameData")
 	int32 GameScore;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void AddToScore(int32 Amount);
 };
