@@ -91,6 +91,8 @@ public:
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	UCameraComponent* ClearCameraComp;
 
 	//Charater
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charater")
@@ -120,6 +122,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Damage")
 	float fHealthPercent();
 
+	// Camera Change
+	void CameraChange();
 
 	// Death
 	UFUNCTION()

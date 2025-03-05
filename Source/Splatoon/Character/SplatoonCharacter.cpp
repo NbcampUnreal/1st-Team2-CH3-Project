@@ -16,7 +16,7 @@
 #include "Materials/MaterialParameterCollectionInstance.h"
 #include "Camera/CameraActor.h"
 #include "Splatoon/Games/SplatoonGameState.h"
-
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 ASplatoonCharacter::ASplatoonCharacter()
@@ -46,10 +46,15 @@ ASplatoonCharacter::ASplatoonCharacter()
 	SpringArmComp->SetupAttachment(RootComponent);
 	SpringArmComp->TargetArmLength = 300.0f;
 	SpringArmComp->bUsePawnControlRotation = true;
+
 	// Camera
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
 	CameraComp->bUsePawnControlRotation = false;
+
+	ClearCameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("ClearCamera"));
+	ClearCameraComp->SetupAttachment(RootComponent);
+	ClearCameraComp->SetActive(false);
 
 	// Character form
 	bIsTransformed = false;
@@ -429,6 +434,12 @@ float ASplatoonCharacter::TakeDamage(
 	LaunchCharacter(Knockback, true, true);
 
 	// Check Recover Timer
+	if (GetWorldTimerManager().IsTimerActive(RecoverHealthHandle))
+	{
+		GetWorldTimerManager().ClearTimer(RecoverHealthHandle);
+	}
+
+	// Check RecoverStart Timer
 	if (GetWorldTimerManager().IsTimerActive(DamageResetHandle))
 	{
 		GetWorldTimerManager().ClearTimer(DamageResetHandle);
@@ -451,6 +462,13 @@ float ASplatoonCharacter::TakeDamage(
 float ASplatoonCharacter::fHealthPercent()
 {
 	return Health / MaxHealth;
+}
+
+void ASplatoonCharacter::CameraChange()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	ClearCameraComp->SetActive(true);
+	CameraComp->SetActive(false);
 }
 
 void ASplatoonCharacter::OnDeath()

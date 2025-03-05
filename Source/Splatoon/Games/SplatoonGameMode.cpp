@@ -1,6 +1,7 @@
 #include "SplatoonGameMode.h"
 #include "Splatoon/LevelActors/Balloon.h"
 #include "Splatoon/LevelActors/Portal.h"
+#include "Splatoon/LevelActors/ClearBox.h"
 #include "Kismet/GameplayStatics.h"
 #include "SplatoonGameInstance.h"
 
@@ -24,6 +25,7 @@ void ASplatoonGameMode::DecreaseBalloonCount()
     }
 
     SpawnPortal();
+    SpawnClearBox();
 }
 
 void ASplatoonGameMode::IncreaseGameScore(int32 Score)
@@ -46,5 +48,17 @@ void ASplatoonGameMode::SpawnPortal()
     if (BalloonCount==0)
     {
         Portal->ActivePortal();
+    }
+}
+
+void ASplatoonGameMode::SpawnClearBox()
+{
+    AClearBox* Box = Cast<AClearBox>(UGameplayStatics::GetActorOfClass(GetWorld(), AClearBox::StaticClass()));
+
+    if (!Box) return;
+
+    if (BalloonCount == 0)
+    {
+        Box->ActiveBox();
     }
 }

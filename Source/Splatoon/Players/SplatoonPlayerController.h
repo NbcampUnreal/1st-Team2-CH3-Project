@@ -17,7 +17,7 @@ class SPLATOON_API ASplatoonPlayerController : public APlayerController
 
 protected:
 	virtual void BeginPlay() override;
-	
+
 public:
 	ASplatoonPlayerController();
 
@@ -37,14 +37,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<UUserWidget> HUDWidgetClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD")
 	UUserWidget* HUDWidgetInstance;
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void ShowHUD();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Main")
 	TSubclassOf<UUserWidget> MainWidgetClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Main")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Main")
 	UUserWidget* MainWidgetInatance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu")
@@ -52,6 +52,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Menu")
 	UUserWidget* GameOverWidgetInstance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Clear")
+	TSubclassOf<UUserWidget> ClearWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Clear")
+	UUserWidget* ClearWidgetInstance;
 
 	UFUNCTION(BlueprintCallable, Category = "Main")
 	void ShowMainMenu();
@@ -59,6 +63,6 @@ public:
 	void StartGame();
 	UFUNCTION(BlueprintCallable, Category = "Main")
 	void ShowGameOver();
-
-
+	UFUNCTION(BlueprintCallable, Category = "Main")
+	void ShowClearWidget();
 };
