@@ -58,7 +58,7 @@ void ASplatoonPlayerController::ShowMainMenu()
 	if (MainWidgetClass) {
 		MainWidgetInatance = CreateWidget<UUserWidget>(this, MainWidgetClass);
 		if (MainWidgetInatance) {
-			MainWidgetInatance->AddToViewport();
+			MainWidgetInatance->AddToViewport(1);
 
 			bShowMouseCursor = true;
 			SetInputMode(FInputModeUIOnly());
