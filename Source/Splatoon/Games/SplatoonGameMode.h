@@ -20,4 +20,5 @@ private:
 	int32 GameScore = 0;
 
 	void SpawnPortal();
+	void SpawnClearBox();
 };

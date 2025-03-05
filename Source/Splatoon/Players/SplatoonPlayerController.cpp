@@ -4,6 +4,7 @@
 #include "SplatoonPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 
 ASplatoonPlayerController::ASplatoonPlayerController() :
@@ -95,6 +96,34 @@ void ASplatoonPlayerController::ShowGameOver()
 		if (GameOverWidgetInstance)
 		{
 			GameOverWidgetInstance->AddToViewport();
+			SetInputMode(FInputModeUIOnly());
+			bShowMouseCursor = true;
+		}
+	}
+}
+
+void ASplatoonPlayerController::ShowClearWidget()
+{
+	if (HUDWidgetInstance) {
+		HUDWidgetInstance->RemoveFromParent();
+		HUDWidgetInstance = nullptr;
+	}
+
+	if (MainWidgetInatance) {
+		MainWidgetInatance->RemoveFromParent();
+		MainWidgetInatance = nullptr;
+	}
+
+	if (GameOverWidgetInstance){
+		GameOverWidgetInstance->RemoveFromParent();
+		GameOverWidgetInstance = nullptr;
+	}
+
+	if (ClearWidgetClass) {
+		ClearWidgetInstance = CreateWidget<UUserWidget>(this, ClearWidgetClass);
+
+		if (ClearWidgetInstance) {
+			ClearWidgetInstance->AddToViewport();
 			SetInputMode(FInputModeUIOnly());
 			bShowMouseCursor = true;
 		}
