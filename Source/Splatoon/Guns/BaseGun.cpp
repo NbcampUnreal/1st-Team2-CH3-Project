@@ -95,8 +95,6 @@ bool ABaseGun::Fire()
 		);
 	}
 	
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Fire / RemainingBullets = %d"), RemainingBullets));
 	return true;
 }
 
@@ -115,7 +113,6 @@ void ABaseGun::Reload()
 	if (!CanReload()) return;
 	
 	AddRemainingBullets(1);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Reload / RemainingBullets = %d"), RemainingBullets));
 }
 
 void ABaseGun::AddRemainingBullets(const int Amount)
