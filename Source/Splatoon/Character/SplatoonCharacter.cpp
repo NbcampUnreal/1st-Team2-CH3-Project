@@ -74,7 +74,6 @@ ASplatoonCharacter::ASplatoonCharacter()
 	// HP
 	MaxHealth = 5;
 	Health = MaxHealth;
-
 }
 
 void ASplatoonCharacter::BeginPlay()
@@ -120,7 +119,6 @@ void ASplatoonCharacter::BeginPlay()
 	// Effect
 	if (HitEffectWidgetClass)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::Printf(TEXT("Widget")));
 		HitEffectWidget = CreateWidget<UUserWidget>(GetWorld(), HitEffectWidgetClass);
 		HitEffectWidget->AddToViewport();
 	}
@@ -277,7 +275,6 @@ void ASplatoonCharacter::StartFire(const FInputActionValue& value)
 		);
 		
 		bIsFire = true;
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire")));
 	}
 }
 void ASplatoonCharacter::StopFire(const FInputActionValue& value)
@@ -293,7 +290,6 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 {
 	if (!bIsTransformed)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Transform")));
 		GetWorldTimerManager().SetTimer(
 			PaintCheckHandle,
 			this,
@@ -312,7 +308,6 @@ void ASplatoonCharacter::Transfor(const FInputActionValue& value)
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Off")));
 		GetCharacterMovement()->MaxWalkSpeed = Speed;
 		GetWorldTimerManager().ClearTimer(PaintCheckHandle);
 		bIsTransformed = false;
@@ -413,13 +408,11 @@ float ASplatoonCharacter::TakeDamage(
 	AActor* DamageCauser)
 {
 	float SDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Hit")));
 	Health--;
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("%d"), Health));
 
 	if (Health <= 0)
 	{
-		OnDeath();
+		OnDropDeath();
 		return SDamage;
 	}
 
@@ -450,9 +443,9 @@ float ASplatoonCharacter::TakeDamage(
 		DamageResetHandle,
 		this,
 		&ASplatoonCharacter::StartRecoverHealth,
-		5.0f,
+		1.0f,
 		false,
-		0.0f
+		5.0f
 	);
 
 
@@ -474,7 +467,6 @@ void ASplatoonCharacter::CameraChange()
 
 void ASplatoonCharacter::OnDeath()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Death")));
 	ASplatoonGameState* SplatoonGameState = GetWorld() ? GetWorld()->GetGameState<ASplatoonGameState>() : nullptr;
 	if (SplatoonGameState)
 	{
@@ -485,6 +477,15 @@ void ASplatoonCharacter::OnDeath()
 void ASplatoonCharacter::OnDropDeath()
 {
 	if (!CameraComp) return;
+
+	if (GetWorldTimerManager().IsTimerActive(DropTimerHandle)) return;
+
+	if (USkeletalMeshComponent* MeshComp = GetMesh())
+	{
+		MeshComp->SetCollisionProfileName(TEXT("Ragdoll"));
+		MeshComp->SetSimulatePhysics(true);
+	}
+	GetCharacterMovement()->DisableMovement();
 
 	ASplatoonPlayerController* PlayerController = Cast<ASplatoonPlayerController>(GetController());
 	FRotator Rotator = GetActorRotation() + FRotator(-90, 0, 0);

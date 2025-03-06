@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Perception/AIperceptionComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Splatoon/Character/SplatoonCharacter.h"
 #include "SplatoonPlayerController.generated.h"
@@ -18,8 +19,16 @@ class SPLATOON_API ASplatoonPlayerController : public APlayerController
 protected:
 	virtual void BeginPlay() override;
 
+	FGenericTeamId TeamId;
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const;
+
 public:
 	ASplatoonPlayerController();
+
+	UPROPERTY(BlueprintReadWrite)
+	class ASplatoonCharacter* Agent;
+
+	virtual FGenericTeamId GetGenericTeamId() const { return TeamId; }
 
 	// Input
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
