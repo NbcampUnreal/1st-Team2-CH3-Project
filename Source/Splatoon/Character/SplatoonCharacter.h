@@ -110,6 +110,8 @@ public:
 	// Animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* AttackMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* ClearMontage;
 
 	// Character form
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Transform")

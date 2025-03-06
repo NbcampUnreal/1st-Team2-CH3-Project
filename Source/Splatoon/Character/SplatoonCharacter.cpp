@@ -459,6 +459,7 @@ float ASplatoonCharacter::fHealthPercent()
 
 void ASplatoonCharacter::CameraChange()
 {
+	GetMesh()->GetAnimInstance()->Montage_Play(ClearMontage);
 	GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 	ClearCameraComp->SetActive(true);
 	CameraComp->SetActive(false);
