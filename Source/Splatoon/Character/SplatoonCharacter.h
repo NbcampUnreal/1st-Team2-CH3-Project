@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Splatoon/Guns/BaseGun.h"
 #include "Animation/AnimMontage.h"
+#include "GenericTeamAgentInterface.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
 #include "SplatoonCharacter.generated.h"
@@ -17,7 +18,7 @@ class UUserWidget;
 struct FInputActionValue;
 
 UCLASS()
-class SPLATOON_API ASplatoonCharacter : public ACharacter
+class SPLATOON_API ASplatoonCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -81,10 +82,18 @@ protected:
 	void StartRecoverHealth();
 	void HealthUp();
 
+	FGenericTeamId TeamId;
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// TeamId
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	int32 ID = 0;
+
+	virtual FGenericTeamId GetGenericTeamId() const override { return TeamId; }
 
 	// Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
