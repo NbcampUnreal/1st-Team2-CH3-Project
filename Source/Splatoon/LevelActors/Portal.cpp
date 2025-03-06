@@ -21,9 +21,6 @@ APortal::APortal()
 	PortalNiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PortalNiagaraComp"));
 	PortalNiagaraComp->SetupAttachment(RootComponent);
 	PortalNiagaraComp->SetVisibility(false);
-
-	CurrentLevelIndex = 0;
-	MaxLevels = 3;
 }
 
 void APortal::ActivePortal()
@@ -31,6 +28,7 @@ void APortal::ActivePortal()
 	if (!PortalNiagaraComp) return;
 
 	PortalNiagaraComp->SetVisibility(true);
+	PortalNiagaraComp->SetEmitterEnable(TEXT("NE_Portal"), true);
 
 	if (PortalCollisionComp)
 	{
