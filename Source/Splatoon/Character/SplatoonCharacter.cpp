@@ -410,7 +410,7 @@ float ASplatoonCharacter::TakeDamage(
 	float SDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	Health--;
 
-	if (Health == 0)
+	if (Health <= 0)
 	{
 		OnDropDeath();
 		return SDamage;
@@ -476,6 +476,8 @@ void ASplatoonCharacter::OnDeath()
 void ASplatoonCharacter::OnDropDeath()
 {
 	if (!CameraComp) return;
+
+	if (GetWorldTimerManager().IsTimerActive(DropTimerHandle)) return;
 
 	if (USkeletalMeshComponent* MeshComp = GetMesh())
 	{
