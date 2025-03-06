@@ -7,6 +7,8 @@
 #include "ClearBox.generated.h"
 
 class UBoxComponent;
+class UStaticMeshComponent;
+class UNiagaraComponent;
 
 UCLASS()
 class SPLATOON_API AClearBox : public AActor
@@ -25,6 +27,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Box")
 	UBoxComponent* BoxCollisionComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Box")
+	UStaticMeshComponent* BoxStaticMeshComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Box")
+	UNiagaraComponent* BoxNiagaraComp;
 
 	UFUNCTION()
 	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
