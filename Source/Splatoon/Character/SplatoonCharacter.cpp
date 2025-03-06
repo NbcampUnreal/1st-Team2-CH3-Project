@@ -410,9 +410,9 @@ float ASplatoonCharacter::TakeDamage(
 	float SDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	Health--;
 
-	if (Health <= 0)
+	if (Health == 0)
 	{
-		OnDeath();
+		OnDropDeath();
 		return SDamage;
 	}
 
@@ -476,6 +476,13 @@ void ASplatoonCharacter::OnDeath()
 void ASplatoonCharacter::OnDropDeath()
 {
 	if (!CameraComp) return;
+
+	if (USkeletalMeshComponent* MeshComp = GetMesh())
+	{
+		MeshComp->SetCollisionProfileName(TEXT("Ragdoll"));
+		MeshComp->SetSimulatePhysics(true);
+	}
+	GetCharacterMovement()->DisableMovement();
 
 	ASplatoonPlayerController* PlayerController = Cast<ASplatoonPlayerController>(GetController());
 	FRotator Rotator = GetActorRotation() + FRotator(-90, 0, 0);
