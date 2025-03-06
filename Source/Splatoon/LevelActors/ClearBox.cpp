@@ -4,8 +4,10 @@
 #include "ClearBox.h"
 #include "Splatoon/Character/SplatoonCharacter.h"
 #include "Splatoon/Players/SplatoonPlayerController.h"
+#include "Splatoon/LevelActors/Portal.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AClearBox::AClearBox()
@@ -18,6 +20,14 @@ AClearBox::AClearBox()
 	BoxCollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BoxCollisionComp->SetCollisionResponseToAllChannels(ECR_Overlap);
 	BoxCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AClearBox::OnOverlap);
+
+	BoxStaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxStaticMesh"));
+	BoxStaticMeshComp->SetupAttachment(RootComponent);
+	BoxStaticMeshComp->SetVisibility(false);
+
+	BoxNiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("BoxNiagaraComp"));
+	BoxNiagaraComp->SetupAttachment(RootComponent);
+	BoxNiagaraComp->SetVisibility(false);
 }
 
 void AClearBox::ActiveBox()
@@ -25,6 +35,16 @@ void AClearBox::ActiveBox()
 	if (BoxCollisionComp) {
 		BoxCollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		BoxCollisionComp->SetGenerateOverlapEvents(true);
+	}
+
+	if (BoxStaticMeshComp)
+	{
+		BoxStaticMeshComp->SetVisibility(true);
+	}
+
+	if (BoxNiagaraComp)
+	{
+		BoxNiagaraComp->SetVisibility(true);
 	}
 }
 
