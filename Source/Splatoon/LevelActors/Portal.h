@@ -16,23 +16,15 @@ public:
 	APortal();
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	int32 CurrentLevelIndex;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
-	int32 MaxLevels;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
-	TArray<FName> LevelMapNames;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level")
 	FName NextLevelName;
-	
-	void ActivePortal();
 
 	UFUNCTION(BlueprintCallable)
 	void OpenLevel();
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayWidgetAnimation();
+
+	void ActivePortal();
 	
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Portal")
