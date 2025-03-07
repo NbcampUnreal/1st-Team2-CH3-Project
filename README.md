@@ -29,18 +29,21 @@
 - **발사**: LMB
 - **플레이어 변신**: C
 ### 2. 페인트 총
-![Image](https://github.com/user-attachments/assets/a8dd2820-93c5-4064-b41b-b26e8bb95a7e)
 - 마우스 좌클릭으로 총을 발사해 탄환이 부딪히면 페인트 데칼을 생성한다.
+![Image](https://github.com/user-attachments/assets/a8dd2820-93c5-4064-b41b-b26e8bb95a7e)
 ### 3. 플레이어 변신
+- C를 눌러 오징어로 변신하면, 일반 필드에서는 기본 속도보다 느려지고 페인트 위에서는 기본 속도보다 빨라진다. 발사는 비활성화 된다.
 ![Image](https://github.com/user-attachments/assets/cb612631-30e3-4370-9087-3fb7b8cada20)
-- C를 눌러 오징어로 변신하면, 일반 필드에서는 기본 속도보다 느려지고 페인트 데칼 위에서는 기본 속도보다 빨라진다. 발사는 비활성화 된다.
-
-![Image](https://github.com/user-attachments/assets/baae8f5e-684d-4365-8f48-9ac886c04440)
 - 오징어 상태에서 페인트 위로 진입 시 탄환이 서서히 장전된다.
+![Image](https://github.com/user-attachments/assets/baae8f5e-684d-4365-8f48-9ac886c04440)
 ### 4. 몬스터 (AI)
+- 근거리 몬스터
+![Image](https://github.com/user-attachments/assets/cfcc3e53-2282-472c-a8ac-4e1351fdd36b)
+- 원거리 몬스터
+![Image](https://github.com/user-attachments/assets/c754cb3b-d096-48d8-9abf-4986be7ac339)
 ### 5. 레벨 이동
+- 필드에 배치된 풍선을 모두 터트리면 포탈이 활성화 된다.
 ![Image](https://github.com/user-attachments/assets/8e151156-5c53-4ec0-bd01-08db69f6a89e)
 ![Image](https://github.com/user-attachments/assets/0ec9d7e2-b8e1-4fb9-aabd-ec2e8c328d80)
-- 필드에 배치된 풍선을 모두 터트리면 포탈이 활성화 된다.
 - 마지막 레벨에서 풍선을 모두 터트리면 트로피가 나타난다.
 - 트로피를 획득하면 게임을 클리어하게 된다.
