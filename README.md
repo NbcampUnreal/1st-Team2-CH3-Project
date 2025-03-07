@@ -41,9 +41,13 @@
 ![Image](https://github.com/user-attachments/assets/cfcc3e53-2282-472c-a8ac-4e1351fdd36b)
 - 원거리 몬스터
 ![Image](https://github.com/user-attachments/assets/c754cb3b-d096-48d8-9abf-4986be7ac339)
+- 함정 몬스터
+![Image](https://github.com/user-attachments/assets/8e63a75e-fbc5-428b-977f-b22adf89abd3)
 ### 5. 레벨 이동
-- 필드에 배치된 풍선을 모두 터트리면 포탈이 활성화 된다.
+- 필드에 배치된 풍선을 모두 터트리면 포탈이 활성화 된다. 플레이어가 포탈에 오버랩되면 다음 레벨로 이동한다.
 ![Image](https://github.com/user-attachments/assets/8e151156-5c53-4ec0-bd01-08db69f6a89e)
 ![Image](https://github.com/user-attachments/assets/0ec9d7e2-b8e1-4fb9-aabd-ec2e8c328d80)
 - 마지막 레벨에서 풍선을 모두 터트리면 트로피가 나타난다.
+![image](https://github.com/user-attachments/assets/e7db2320-aec0-4816-ac6b-03aa30fc5211)
 - 트로피를 획득하면 게임을 클리어하게 된다.
+![Image](https://github.com/user-attachments/assets/34e8e2be-8b55-44b6-bbdd-8d56b2b4e652)
